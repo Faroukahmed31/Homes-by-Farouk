@@ -8,9 +8,9 @@ export function Navbar() {
     <header className="fixed top-0 w-full z-50 bg-surface/10 backdrop-blur-2xl border-b border-primary/20 flex justify-between items-center px-6 md:px-20 py-6">
       <Link href="/" className="flex items-center gap-2">
         <img 
-          src="/images/homes-by-farouk-main-logo.png" 
+          src="/images/homes-by-farouk-website-logo.png" 
           alt="Homes by Farouk" 
-          className="h-12 w-auto object-contain"
+          className="h-16 w-auto object-contain scale-125 origin-left"
         />
       </Link>
       <nav className="hidden md:flex gap-8">

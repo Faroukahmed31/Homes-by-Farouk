@@ -7,9 +7,9 @@ export function Footer() {
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
         <Link href="/" className="flex items-center gap-2">
           <img 
-            src="/images/homes-by-farouk-main-logo.png" 
+            src="/images/homes-by-farouk-website-logo.png" 
             alt="Homes by Farouk" 
-            className="h-10 w-auto object-contain"
+            className="h-12 w-auto object-contain scale-110"
           />
         </Link>
         
