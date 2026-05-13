@@ -1,26 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap');
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: "Inter", var(--font-sans);
+  --font-heading: "Playfair Display", serif;
+  
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --background: #131313;
+  --foreground: #e5e2e1;
+  
+  --card: #201f1f;
+  --card-foreground: #e5e2e1;
+  
+  --popover: #201f1f;
+  --popover-foreground: #e5e2e1;
+  
+  --primary: #f2ca50; /* Gold */
+  --primary-foreground: #3c2f00;
+  
+  --secondary: #C41E3A; /* Cardinal Red */
+  --secondary-foreground: #ffffff;
+  
+  --muted: #2a2a2a;
+  --muted-foreground: #99907c;
+  
+  --accent: #d4af37;
+  --accent-foreground: #131313;
+  
+  --destructive: #ffb4ab;
+  --destructive-foreground: #690005;
+  
+  --border: rgba(212, 175, 55, 0.2);
+  --input: rgba(212, 175, 55, 0.1);
+  --ring: #d4af37;
+  
+  --radius: 0.25rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    background-image: radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 50%),
+                      linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.01) 45%, transparent 50%);
+    background-size: 100% 100%, 200% 200%;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading tracking-tight;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .glass-panel {
+    @apply bg-white/10 backdrop-blur-xl border border-white/10;
+  }
+  .gold-border {
+    @apply border border-[#D4AF37]/50;
+  }
+  .gold-border-bottom {
+    @apply border-b border-[#D4AF37]/50;
+  }
+  .red-button {
+    @apply bg-[#C41E3A] text-white hover:brightness-110 transition-all uppercase tracking-widest font-bold;
+  }
 }

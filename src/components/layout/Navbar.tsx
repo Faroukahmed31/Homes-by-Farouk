@@ -1,0 +1,35 @@
+'use client';
+
+import React from 'react';
+import Link from 'next/link';
+
+export function Navbar() {
+  return (
+    <header className="fixed top-0 w-full z-50 bg-surface/10 backdrop-blur-2xl border-b border-primary/20 flex justify-between items-center px-6 md:px-20 py-6">
+      <div className="font-heading text-2xl text-primary tracking-tighter uppercase font-semibold">
+        Homes by Farouk
+      </div>
+      <nav className="hidden md:flex gap-8">
+        <Link href="/" className="text-primary border-b border-primary font-bold text-sm hover:opacity-80 transition-all duration-300">
+          Home
+        </Link>
+        <Link href="/properties" className="text-foreground/60 hover:text-primary transition-colors duration-300 text-sm hover:opacity-80">
+          Properties
+        </Link>
+        <Link href="/about" className="text-foreground/60 hover:text-primary transition-colors duration-300 text-sm hover:opacity-80">
+          About Us
+        </Link>
+        <Link href="/contact" className="text-foreground/60 hover:text-primary transition-colors duration-300 text-sm hover:opacity-80">
+          Contact
+        </Link>
+      </nav>
+      <Link href="/contact" className="hidden md:inline-flex red-button px-8 py-4 items-center justify-center text-xs font-bold">
+        Enquire Now
+      </Link>
+      {/* Mobile Menu Icon */}
+      <button className="md:hidden text-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+      </button>
+    </header>
+  );
+}
