@@ -6,9 +6,13 @@ import Link from 'next/link';
 export function Navbar() {
   return (
     <header className="fixed top-0 w-full z-50 bg-surface/10 backdrop-blur-2xl border-b border-primary/20 flex justify-between items-center px-6 md:px-20 py-6">
-      <div className="font-heading text-2xl text-primary tracking-tighter uppercase font-semibold">
-        Homes by Farouk
-      </div>
+      <Link href="/" className="flex items-center gap-2">
+        <img 
+          src="/images/homes-by-farouk-main-logo.png" 
+          alt="Homes by Farouk" 
+          className="h-12 w-auto object-contain"
+        />
+      </Link>
       <nav className="hidden md:flex gap-8">
         <Link href="/" className="text-primary border-b border-primary font-bold text-sm hover:opacity-80 transition-all duration-300">
           Home
