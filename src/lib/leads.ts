@@ -46,6 +46,9 @@ export async function saveLead(lead: Omit<Lead, 'id' | 'timestamp'>) {
 
 export async function getLeads(): Promise<Lead[]> {
   try {
+    // Ensure table exists before querying
+    await initLeadsTable();
+
     const result = await sql`
       SELECT id, name, email, guide_type as "guideType", timestamp 
       FROM leads 
@@ -57,7 +60,7 @@ export async function getLeads(): Promise<Lead[]> {
       name: row.name,
       email: row.email,
       guideType: row.guideType,
-      timestamp: row.timestamp.toISOString(),
+      timestamp: row.timestamp ? new Date(row.timestamp).toISOString() : new Date().toISOString(),
     }));
   } catch (error) {
     console.error('Failed to get leads from database:', error);
