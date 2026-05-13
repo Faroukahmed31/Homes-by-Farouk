@@ -1,5 +1,4 @@
-import fs from 'fs';
-import path from 'path';
+import { neon } from '@neondatabase/serverless';
 
 export interface Lead {
   id: string;
@@ -9,45 +8,59 @@ export interface Lead {
   timestamp: string;
 }
 
-const LEADS_FILE = path.join(process.cwd(), 'data', 'leads.json');
+const sql = neon(process.env.POSTGRES_URL || '');
+
+export async function initLeadsTable() {
+  try {
+    await sql`
+      CREATE TABLE IF NOT EXISTS leads (
+        id SERIAL PRIMARY KEY,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        guide_type TEXT NOT NULL,
+        timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+      );
+    `;
+    console.log('Leads table initialized');
+  } catch (error) {
+    console.error('Failed to initialize leads table:', error);
+  }
+}
 
 export async function saveLead(lead: Omit<Lead, 'id' | 'timestamp'>) {
-  const newLead: Lead = {
-    ...lead,
-    id: Math.random().toString(36).substring(2, 9),
-    timestamp: new Date().toISOString(),
-  };
-
   try {
-    const dir = path.dirname(LEADS_FILE);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
+    // Ensure table exists
+    await initLeadsTable();
 
-    let leads: Lead[] = [];
-    if (fs.existsSync(LEADS_FILE)) {
-      const data = fs.readFileSync(LEADS_FILE, 'utf8');
-      leads = JSON.parse(data);
-    }
-
-    leads.push(newLead);
-    fs.writeFileSync(LEADS_FILE, JSON.stringify(leads, null, 2));
-    return newLead;
+    await sql`
+      INSERT INTO leads (name, email, guide_type)
+      VALUES (${lead.name}, ${lead.email}, ${lead.guideType});
+    `;
+    console.log('Lead saved to database');
+    return true;
   } catch (error) {
-    console.error('Failed to save lead:', error);
+    console.error('Failed to save lead to database:', error);
     return null;
   }
 }
 
 export async function getLeads(): Promise<Lead[]> {
   try {
-    if (!fs.existsSync(LEADS_FILE)) {
-      return [];
-    }
-    const data = fs.readFileSync(LEADS_FILE, 'utf8');
-    return JSON.parse(data);
+    const result = await sql`
+      SELECT id, name, email, guide_type as "guideType", timestamp 
+      FROM leads 
+      ORDER BY timestamp DESC;
+    `;
+    
+    return result.map(row => ({
+      id: row.id.toString(),
+      name: row.name,
+      email: row.email,
+      guideType: row.guideType,
+      timestamp: row.timestamp.toISOString(),
+    }));
   } catch (error) {
-    console.error('Failed to get leads:', error);
+    console.error('Failed to get leads from database:', error);
     return [];
   }
 }
