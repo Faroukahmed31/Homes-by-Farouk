@@ -62,34 +62,36 @@ export function Navbar() {
         </button>
       </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu Dropdown */}
       <div className={cn(
-        "fixed inset-0 bg-brand-dark transition-all duration-500 ease-in-out z-40 flex flex-col items-center justify-center gap-8 md:hidden",
-        isOpen ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
+        "absolute top-full left-0 w-full bg-brand-dark/95 backdrop-blur-xl border-b border-primary/20 transition-all duration-300 ease-in-out overflow-hidden md:hidden",
+        isOpen ? "max-h-[400px] opacity-100 py-8" : "max-h-0 opacity-0 py-0"
       )}>
-        {navLinks.map((link) => {
-          const isActive = pathname === link.href;
-          return (
-            <Link 
-              key={link.href}
-              href={link.href} 
-              onClick={() => setIsOpen(false)}
-              className={cn(
-                "text-2xl font-heading tracking-widest transition-all duration-300",
-                isActive ? "text-primary font-bold" : "text-foreground/60"
-              )}
-            >
-              {link.name}
-            </Link>
-          );
-        })}
-        <Link 
-          href="/contact" 
-          onClick={() => setIsOpen(false)}
-          className="red-button px-12 py-5 mt-4 text-sm font-bold tracking-[0.2em]"
-        >
-          ENQUIRE NOW
-        </Link>
+        <div className="flex flex-col items-center gap-6 px-6">
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href;
+            return (
+              <Link 
+                key={link.href}
+                href={link.href} 
+                onClick={() => setIsOpen(false)}
+                className={cn(
+                  "text-lg font-heading tracking-[0.2em] uppercase transition-all duration-300",
+                  isActive ? "text-primary font-bold" : "text-foreground/60"
+                )}
+              >
+                {link.name}
+              </Link>
+            );
+          })}
+          <Link 
+            href="/contact" 
+            onClick={() => setIsOpen(false)}
+            className="w-full red-button py-4 text-center text-xs font-bold tracking-[0.2em]"
+          >
+            ENQUIRE NOW
+          </Link>
+        </div>
       </div>
     </header>
   );
