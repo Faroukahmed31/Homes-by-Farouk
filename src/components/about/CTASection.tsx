@@ -45,10 +45,10 @@ export function CTASection() {
 
       <motion.div 
         initial={{ opacity: 0 }}
-        whileInView={{ opacity: 0.8 }}
+        whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 1, delay: 0.6 }}
-        className="mt-16 font-label text-[10px] tracking-[0.4em] text-foreground/60 uppercase"
+        className="mt-16 font-label text-[10px] tracking-[0.4em] text-foreground/90 uppercase"
       >
         {cta.subtext}
       </motion.div>
