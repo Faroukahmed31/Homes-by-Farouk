@@ -148,15 +148,15 @@ export function ContactForm() {
         {/* Phone Number with Country Code */}
         <div className="relative group">
           <div className="flex gap-4">
-            <div className="relative shrink-0">
+            <div className="relative shrink-0 w-[100px]">
               <select
                 value={countryCode}
                 onChange={(e) => setCountryCode(e.target.value)}
-                className="bg-transparent border-0 border-b border-white/10 px-0 py-4 text-lg text-foreground focus:ring-0 focus:border-primary appearance-none cursor-pointer pr-8 font-sans"
+                className="w-full bg-transparent border-0 border-b border-white/10 px-0 py-4 text-lg text-foreground focus:ring-0 focus:border-primary appearance-none cursor-pointer pr-6 font-sans"
               >
                 {sortedCountries.map((c) => (
                   <option key={`${c.code}-${c.name}`} value={c.code} className="bg-brand-dark text-foreground">
-                    {c.flag} {c.code} ({c.name})
+                    {c.flag} {c.code} — {c.name}
                   </option>
                 ))}
               </select>
