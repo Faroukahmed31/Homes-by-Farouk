@@ -4,6 +4,8 @@ export interface Lead {
   id: string;
   name: string;
   email: string;
+  phone?: string;
+  message?: string;
   guideType: string;
   timestamp: string;
 }
@@ -17,6 +19,8 @@ export async function initLeadsTable() {
         id SERIAL PRIMARY KEY,
         name TEXT NOT NULL,
         email TEXT NOT NULL,
+        phone TEXT,
+        message TEXT,
         guide_type TEXT NOT NULL,
         timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
       );
@@ -33,8 +37,8 @@ export async function saveLead(lead: Omit<Lead, 'id' | 'timestamp'>) {
     await initLeadsTable();
 
     await sql`
-      INSERT INTO leads (name, email, guide_type)
-      VALUES (${lead.name}, ${lead.email}, ${lead.guideType});
+      INSERT INTO leads (name, email, phone, message, guide_type)
+      VALUES (${lead.name}, ${lead.email}, ${lead.phone || null}, ${lead.message || null}, ${lead.guideType});
     `;
     console.log('Lead saved to database');
     return true;
@@ -50,7 +54,7 @@ export async function getLeads(): Promise<Lead[]> {
     await initLeadsTable();
 
     const result = await sql`
-      SELECT id, name, email, guide_type as "guideType", timestamp 
+      SELECT id, name, email, phone, message, guide_type as "guideType", timestamp 
       FROM leads 
       ORDER BY timestamp DESC;
     `;
@@ -59,6 +63,8 @@ export async function getLeads(): Promise<Lead[]> {
       id: row.id.toString(),
       name: row.name,
       email: row.email,
+      phone: row.phone,
+      message: row.message,
       guideType: row.guideType,
       timestamp: row.timestamp ? new Date(row.timestamp).toISOString() : new Date().toISOString(),
     }));

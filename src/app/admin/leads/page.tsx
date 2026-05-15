@@ -34,13 +34,14 @@ export default async function LeadsPage() {
                   <th className="p-6 text-[10px] uppercase tracking-widest font-bold text-primary">Date</th>
                   <th className="p-6 text-[10px] uppercase tracking-widest font-bold text-primary">Name</th>
                   <th className="p-6 text-[10px] uppercase tracking-widest font-bold text-primary">Email</th>
-                  <th className="p-6 text-[10px] uppercase tracking-widest font-bold text-primary">Request</th>
+                  <th className="p-6 text-[10px] uppercase tracking-widest font-bold text-primary">Phone</th>
+                  <th className="p-6 text-[10px] uppercase tracking-widest font-bold text-primary">Request / Message</th>
                 </tr>
               </thead>
               <tbody>
                 {sortedLeads.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="p-20 text-center text-muted-foreground italic">
+                    <td colSpan={5} className="p-20 text-center text-muted-foreground italic">
                       No leads generated yet.
                     </td>
                   </tr>
@@ -51,11 +52,27 @@ export default async function LeadsPage() {
                         {new Date(lead.timestamp).toLocaleDateString()} {new Date(lead.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </td>
                       <td className="p-6 font-bold">{lead.name}</td>
-                      <td className="p-6 text-primary">{lead.email}</td>
+                      <td className="p-6 text-primary underline decoration-primary/30">
+                        <a href={`mailto:${lead.email}`}>{lead.email}</a>
+                      </td>
+                      <td className="p-6 text-sm">
+                        {lead.phone ? (
+                          <a href={`tel:${lead.phone}`} className="hover:text-primary transition-colors">{lead.phone}</a>
+                        ) : (
+                          <span className="text-white/20">-</span>
+                        )}
+                      </td>
                       <td className="p-6">
-                        <span className="px-3 py-1 bg-primary/10 text-primary border border-primary/20 text-[10px] font-bold uppercase tracking-widest">
-                          {lead.guideType.replace(/-/g, ' ')}
-                        </span>
+                        <div className="flex flex-col gap-1">
+                          <span className="px-3 py-1 bg-primary/10 text-primary border border-primary/20 text-[10px] font-bold uppercase tracking-widest w-fit">
+                            {lead.guideType.replace(/-/g, ' ')}
+                          </span>
+                          {lead.message && (
+                            <p className="text-xs text-muted-foreground mt-2 max-w-xs line-clamp-2 italic">
+                              &ldquo;{lead.message}&rdquo;
+                            </p>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))
