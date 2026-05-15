@@ -15,6 +15,7 @@ export const properties: Property[] = [
     squareMeters: '250 - 380',
     completionDate: 'Q4 2025',
     status: 'Off-Plan',
+    purpose: 'buy',
     startingPrice: 35000000,
     heroImage: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCwWEDCc5p6XtQMt1WNg2_YPHJeuVnESoXmIe30GvTTVs9GUCY4Ca9zgBF3IHP0DyCjbjRex4dptVz4Wq5rlktAnl56N3uerno8_6kcqCuYn8OR6fKWPbubxDjCXA3Ogfl9tKUvO25zK9BVGGk0V5EDDia-wsJw9jVCmbq1CJ-6cXmVXSQ2Y-ySwmTPngMX1pkRFg7wNHWH6EY-j0wf7FFcq0urQpxWlIb-mQKQEzFwMYqY0iiRJf8L38fPyL4yv7jdkoqffXlpVb25',
     galleryImages: [
@@ -46,6 +47,7 @@ export const properties: Property[] = [
     squareMeters: '180 - 240',
     completionDate: 'Ready',
     status: 'Ready',
+    purpose: 'buy',
     startingPrice: 45000000,
     heroImage: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDZ41GSpXozJjxBbM4p1IuNmxDMk5Dq3z2I9Sc0HOKpfdjUq0ug46t1aoxWAfrt3CGocGIgU2PqPBU3RivuoYZL6gXcJNWJCLYMbFCv6Or-Wqx5q9XWzslhcmXYAknHl1_RHlr3hEp6_0QixviszVYrNQWD7VEau_uWGZBgLLT11tUuugK9UiI8haX6CQ1BHVj8hkIYh_9gRE2PhqlkrwGTFMDrZW0Cnye2fo-qM7DZk5hpO0OtNeykb5CP8dFNy5DN6YhHDrrlholJ',
     galleryImages: [
@@ -72,6 +74,7 @@ export const properties: Property[] = [
     squareMeters: '450 - 600',
     completionDate: 'Q2 2026',
     status: 'Off-Plan',
+    purpose: 'buy',
     startingPrice: 85000000,
     heroImage: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDbfa3jAJRvAElATsxQVKUlMqxUD9hZXtR6lIZTvQmbJJxr42gwm_Cv2NY7H7rhpdrNm5pivv8y_LBlOXMpS0XQKt4r4BFfzYLnutVZ5QuFmokmLW1Z0uCamEr39XFrO04KF2SYzFyRF7-FjgqGVmy4tKzg7y1KM3xeIzqwPN8dCT1Zdc3bV-ttSlO_jgtN2uCYcl-DhBZmlUAhHQyvyDI5uIXlDLXQhDWabRaujyQzxtIxPHBkbbKZeTi3iGvZOMurZnyzaV6UZKQ0',
     galleryImages: [
@@ -98,6 +101,7 @@ export const properties: Property[] = [
     squareMeters: '280',
     completionDate: 'Ready',
     status: 'Ready',
+    purpose: 'buy',
     startingPrice: 35000000,
     heroImage: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBB7zDWHRNYiu79AekVv5XFdGgyDmWoquNXLmYPshu6gNqqNfi0iuFuGCwQGnxJlgWk4GT7nFho-EjZ-5-i0IVGpLNca06vlR7-HRWw9EqjsR3FNelwjCOwy8GQkPMqE0AkaZyjYE79BjhCj6-YmU9VY30BWwskNfEr6L1W0pE5dBjZ2xtAtRVv_PchkT_h1OhWvqQ1wQwCmCiHRcMLzhGJlSy3nobB2Na1XNo7mTQStHGQAYK4mWKrk-pw5lsouwHb0SoFOOE3kLvh',
     galleryImages: [
@@ -124,6 +128,7 @@ export const properties: Property[] = [
     squareMeters: '120 - 300',
     completionDate: 'Q1 2027',
     status: 'Off-Plan',
+    purpose: 'buy',
     startingPrice: 120000000,
     heroImage: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD8JbWVrAsOTDfCNbcxvB2aBEvcwjzYxDSgtKbUi6mk9ho5vNOjIDmh6BSgMasHEL1_VZeARAO334QyWb5-YCed2XaBlSx4_upUD3HGy42kERQIOHbZE-X2rcLoSvk9B-_Huuy3U8nlIvLiZ8DLUjFASxDNYKyLamcclNbdCUf0o1cKHEAFYSITDfhG-VRaL1RbAVXsRbsvAF26cKfHbsrYie441_4CRzXeM779rw_S5p8BhxQDeLkg0hSYwzvSBLgkb2rVlYb33XTH',
     galleryImages: [

@@ -23,6 +23,7 @@ export interface Property {
   squareMeters: string;
   completionDate: string;
   status: PropertyStatus;
+  purpose: 'buy' | 'rent';
   startingPrice: number;
   heroImage: string;
   galleryImages: string[];

@@ -43,11 +43,10 @@ export function PropertyList() {
       const matchLocation = filter.location === 'any' || 
                             p.location.toLowerCase().includes(filter.location.toLowerCase());
 
-      // Note: Currently properties don't have a 'purpose' field, 
-      // but we handle it here for future expansion or mapping.
-      // If purpose is 'rent', we typically look for 'Ready' units anyway as per user request.
+      // Purpose Match
+      const matchPurpose = p.purpose === filter.purpose;
       
-      return matchStatus && matchSearch && matchLocation;
+      return matchStatus && matchSearch && matchLocation && matchPurpose;
     });
   }, [filter]);
 
@@ -66,6 +65,15 @@ export function PropertyList() {
         </div>
         
         <div className="flex gap-4">
+          <select 
+            className="bg-transparent border-0 border-b border-primary/30 text-white py-2 focus:ring-0 cursor-pointer font-sans"
+            value={filter.purpose}
+            onChange={(e) => setFilter({...filter, purpose: e.target.value as 'buy' | 'rent'})}
+          >
+            <option className="bg-[#131313]" value="buy">For Sale</option>
+            <option className="bg-[#131313]" value="rent">To Rent</option>
+          </select>
+
           <select 
             className="bg-transparent border-0 border-b border-primary/30 text-white py-2 focus:ring-0 cursor-pointer font-sans"
             value={filter.status}
