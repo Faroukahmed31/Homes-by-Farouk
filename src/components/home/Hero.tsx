@@ -21,7 +21,7 @@ export function Hero() {
         <h1 className="text-4xl md:text-7xl font-heading text-primary mb-8 leading-tight">
           Find Your Dream Home in Nairobi.
         </h1>
-        <Link href="#properties" className="inline-flex red-button px-10 py-5 items-center justify-center tracking-widest mt-8 text-sm font-bold">
+        <Link href="/properties" className="inline-flex red-button px-10 py-5 items-center justify-center tracking-widest mt-8 text-sm font-bold">
           View Featured Properties
         </Link>
       </div>

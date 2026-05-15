@@ -2,8 +2,19 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
 
 export function Navbar() {
+  const pathname = usePathname();
+
+  const navLinks = [
+    { name: 'Home', href: '/' },
+    { name: 'Properties', href: '/properties' },
+    { name: 'About Us', href: '/about' },
+    { name: 'Contact', href: '/contact' },
+  ];
+
   return (
     <header className="fixed top-0 w-full z-50 bg-brand-dark backdrop-blur-2xl border-b border-primary/20 flex justify-between items-center px-6 md:px-20 py-6">
       <Link href="/" className="flex items-center">
@@ -14,18 +25,23 @@ export function Navbar() {
         />
       </Link>
       <nav className="hidden md:flex gap-8">
-        <Link href="/" className="text-primary border-b border-primary font-bold text-sm hover:opacity-80 transition-all duration-300">
-          Home
-        </Link>
-        <Link href="/properties" className="text-foreground/60 hover:text-primary transition-colors duration-300 text-sm hover:opacity-80">
-          Properties
-        </Link>
-        <Link href="/about" className="text-foreground/60 hover:text-primary transition-colors duration-300 text-sm hover:opacity-80">
-          About Us
-        </Link>
-        <Link href="/contact" className="text-foreground/60 hover:text-primary transition-colors duration-300 text-sm hover:opacity-80">
-          Contact
-        </Link>
+        {navLinks.map((link) => {
+          const isActive = pathname === link.href;
+          return (
+            <Link 
+              key={link.href}
+              href={link.href} 
+              className={cn(
+                "text-sm transition-all duration-300 hover:opacity-80 hover:text-primary",
+                isActive 
+                  ? "text-primary border-b border-primary font-bold" 
+                  : "text-foreground/60"
+              )}
+            >
+              {link.name}
+            </Link>
+          );
+        })}
       </nav>
       <Link href="/contact" className="hidden md:inline-flex red-button px-8 py-4 items-center justify-center text-xs font-bold">
         Enquire Now
