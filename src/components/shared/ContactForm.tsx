@@ -111,7 +111,10 @@ export function ContactForm() {
           />
           <label 
             htmlFor="name"
-            className="absolute left-0 top-4 text-foreground/40 text-lg transition-all duration-300 peer-placeholder-shown:top-4 peer-placeholder-shown:text-lg peer-focus:-top-4 peer-focus:text-xs peer-focus:text-primary uppercase tracking-[0.2em] font-bold"
+            className="absolute left-0 transition-all duration-300 pointer-events-none uppercase tracking-[0.2em] font-bold
+              -top-4 text-xs text-primary
+              peer-placeholder-shown:top-4 peer-placeholder-shown:text-lg peer-placeholder-shown:text-foreground/40
+              peer-focus:-top-4 peer-focus:text-xs peer-focus:text-primary"
           >
             Full Name
           </label>
@@ -135,7 +138,10 @@ export function ContactForm() {
           />
           <label 
             htmlFor="email"
-            className="absolute left-0 top-4 text-foreground/40 text-lg transition-all duration-300 peer-placeholder-shown:top-4 peer-placeholder-shown:text-lg peer-focus:-top-4 peer-focus:text-xs peer-focus:text-primary uppercase tracking-[0.2em] font-bold"
+            className="absolute left-0 transition-all duration-300 pointer-events-none uppercase tracking-[0.2em] font-bold
+              -top-4 text-xs text-primary
+              peer-placeholder-shown:top-4 peer-placeholder-shown:text-lg peer-placeholder-shown:text-foreground/40
+              peer-focus:-top-4 peer-focus:text-xs peer-focus:text-primary"
           >
             Email Address
           </label>
@@ -176,7 +182,10 @@ export function ContactForm() {
               />
               <label 
                 htmlFor="phone"
-                className="absolute left-0 top-4 text-foreground/40 text-lg transition-all duration-300 peer-placeholder-shown:top-4 peer-placeholder-shown:text-lg peer-focus:-top-4 peer-focus:text-xs peer-focus:text-primary uppercase tracking-[0.2em] font-bold"
+                className="absolute left-0 transition-all duration-300 pointer-events-none uppercase tracking-[0.2em] font-bold
+                  -top-4 text-xs text-primary
+                  peer-placeholder-shown:top-4 peer-placeholder-shown:text-lg peer-placeholder-shown:text-foreground/40
+                  peer-focus:-top-4 peer-focus:text-xs peer-focus:text-primary"
               >
                 Phone Number
               </label>
@@ -234,7 +243,10 @@ export function ContactForm() {
           />
           <label 
             htmlFor="message"
-            className="absolute left-0 top-4 text-foreground/40 text-lg transition-all duration-300 peer-placeholder-shown:top-4 peer-placeholder-shown:text-lg peer-focus:-top-4 peer-focus:text-xs peer-focus:text-primary uppercase tracking-[0.2em] font-bold"
+            className="absolute left-0 transition-all duration-300 pointer-events-none uppercase tracking-[0.2em] font-bold
+              -top-4 text-xs text-primary
+              peer-placeholder-shown:top-4 peer-placeholder-shown:text-lg peer-placeholder-shown:text-foreground/40
+              peer-focus:-top-4 peer-focus:text-xs peer-focus:text-primary"
           >
             Tell us about your investment goals
           </label>
