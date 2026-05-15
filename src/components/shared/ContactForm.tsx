@@ -175,6 +175,10 @@ export function ContactForm() {
                 id="phone"
                 type="tel"
                 placeholder=" "
+                onInput={(e) => {
+                  const target = e.target as HTMLInputElement;
+                  target.value = target.value.replace(/[^0-9]/g, '');
+                }}
                 className={cn(
                   "w-full bg-transparent border-0 border-b border-white/10 px-0 py-4 text-lg text-foreground focus:ring-0 focus:border-primary transition-all duration-300 peer",
                   errors.phone && "border-red-500/50"
