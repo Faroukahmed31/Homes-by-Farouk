@@ -5,11 +5,11 @@ export function Footer() {
   return (
     <footer className="bg-black/40 border-t border-primary/10 px-6 md:px-20 py-12">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center">
           <img 
             src="/images/homes-by-farouk-website-logo.png" 
             alt="Homes by Farouk" 
-            className="h-12 w-auto object-contain scale-110"
+            className="h-10 md:h-14 w-auto object-contain"
           />
         </Link>
         

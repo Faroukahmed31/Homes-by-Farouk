@@ -5,12 +5,12 @@ import Link from 'next/link';
 
 export function Navbar() {
   return (
-    <header className="fixed top-0 w-full z-50 bg-surface/10 backdrop-blur-2xl border-b border-primary/20 flex justify-between items-center px-6 md:px-20 py-6">
-      <Link href="/" className="flex items-center gap-2">
+    <header className="fixed top-0 w-full z-50 bg-brand-dark backdrop-blur-2xl border-b border-primary/20 flex justify-between items-center px-6 md:px-20 py-6">
+      <Link href="/" className="flex items-center">
         <img 
           src="/images/homes-by-farouk-website-logo.png" 
           alt="Homes by Farouk" 
-          className="h-16 w-auto object-contain scale-125 origin-left"
+          className="h-12 md:h-15 w-auto object-contain"
         />
       </Link>
       <nav className="hidden md:flex gap-8">

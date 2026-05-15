@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { PropertyCard } from '../properties/PropertyCard';
-import { properties } from '@/lib/data';
+import { properties } from '@/data/properties';
 
 export function FeaturedProperties() {
   const featured = properties.slice(0, 4);
@@ -18,7 +18,7 @@ export function FeaturedProperties() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {featured.map((property) => (
-          <PropertyCard key={property.id} property={property} />
+          <PropertyCard key={property.slug} property={property} />
         ))}
       </div>
     </section>

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;1,400&family=Playfair+Display:wght@400;600;700&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -9,9 +9,11 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: "Inter", var(--font-sans);
+  --font-sans: "Montserrat", var(--font-sans);
   --font-heading: "Playfair Display", serif;
+  --font-label: "Montserrat", sans-serif;
   
+  --color-brand-dark: #08090D;
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
@@ -29,17 +31,29 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
+  --color-surface-container: #1a2026;
+  --color-surface-container-low: #161c21;
+  --color-surface-container-lowest: #090f14;
+  --color-on-surface-variant: #e5bdbb;
+  --color-on-tertiary-fixed-variant: #42474d;
+
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) * 1.4);
+
+  @keyframes fade-slide-up {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  --animate-fade-slide-up: fade-slide-up 1.2s ease-out forwards;
 }
 
 :root {
-  --background: #131313;
+  --background: #08090D;
   --foreground: #e5e2e1;
   
-  --card: #201f1f;
+  --card: #12141a;
   --card-foreground: #e5e2e1;
   
   --popover: #201f1f;

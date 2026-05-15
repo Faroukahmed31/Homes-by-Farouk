@@ -16,8 +16,9 @@ export const metadata: Metadata = {
   title: "Homes by Farouk | Architectural Excellence in Nairobi",
   description: "Luxury property investment and premium real estate in Nairobi, Kenya.",
   icons: {
-    icon: "/images/homes-by-farouk-website-logo.png",
-    apple: "/images/homes-by-farouk-website-logo.png",
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
   }
 };
 
