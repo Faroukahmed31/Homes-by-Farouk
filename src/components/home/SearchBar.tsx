@@ -39,7 +39,7 @@ export function SearchBar() {
       <div className="glass-panel gold-border p-8 flex flex-col md:flex-row gap-6 items-end">
         <div className="w-full md:w-1/4 flex flex-col gap-2">
           <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Purpose</label>
-          <Select value={purpose} onValueChange={setPurpose}>
+          <Select value={purpose} onValueChange={(val) => setPurpose(val || 'buy')}>
             <SelectTrigger className="w-full border-0 border-b border-primary/50 rounded-none bg-transparent px-0 text-lg h-auto py-2 focus:ring-0">
               <SelectValue placeholder="Purpose" />
             </SelectTrigger>
@@ -52,7 +52,7 @@ export function SearchBar() {
         
         <div className="w-full md:w-1/4 flex flex-col gap-2">
           <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Property Status</label>
-          <Select value={status} onValueChange={setStatus}>
+          <Select value={status} onValueChange={(val) => setStatus(val || 'all')}>
             <SelectTrigger className="w-full border-0 border-b border-primary/50 rounded-none bg-transparent px-0 text-lg h-auto py-2 focus:ring-0">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
@@ -66,7 +66,7 @@ export function SearchBar() {
         
         <div className="w-full md:w-1/4 flex flex-col gap-2">
           <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Location</label>
-          <Select value={location} onValueChange={setLocation}>
+          <Select value={location} onValueChange={(val) => setLocation(val || 'any')}>
             <SelectTrigger className="w-full border-0 border-b border-primary/50 rounded-none bg-transparent px-0 text-lg h-auto py-2 focus:ring-0">
               <SelectValue placeholder="Location" />
             </SelectTrigger>
