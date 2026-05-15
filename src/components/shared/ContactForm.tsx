@@ -23,6 +23,24 @@ export function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [countryCode, setCountryCode] = useState('+254'); // Default to Kenya
+
+  const countries = [
+    { code: '+254', name: 'Kenya', flag: '🇰🇪' },
+    { code: '+1', name: 'USA/Canada', flag: '🇺🇸' },
+    { code: '+44', name: 'UK', flag: '🇬🇧' },
+    { code: '+971', name: 'UAE', flag: '🇦🇪' },
+    { code: '+27', name: 'South Africa', flag: '🇿🇦' },
+    { code: '+234', name: 'Nigeria', flag: '🇳🇬' },
+    { code: '+250', name: 'Rwanda', flag: '🇷🇼' },
+    { code: '+255', name: 'Tanzania', flag: '🇹🇿' },
+    { code: '+256', name: 'Uganda', flag: '🇺🇬' },
+    { code: '+49', name: 'Germany', flag: '🇩🇪' },
+    { code: '+33', name: 'France', flag: '🇫🇷' },
+    { code: '+86', name: 'China', flag: '🇨🇳' },
+    { code: '+91', name: 'India', flag: '🇮🇳' },
+    { code: '+61', name: 'Australia', flag: '🇦🇺' },
+  ];
 
   const {
     register,
@@ -40,8 +58,14 @@ export function ContactForm() {
     setIsSubmitting(true);
     setError(null);
     
+    // Combine country code with phone number
+    const finalData = {
+      ...data,
+      phone: `${countryCode} ${data.phone}`,
+    };
+    
     try {
-      const result = await submitInquiry(data);
+      const result = await submitInquiry(finalData);
       if (result.success) {
         setIsSuccess(true);
         reset();
@@ -80,13 +104,13 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8" id="inquiry-form">
-      <div className="flex flex-col gap-2 mb-4">
-        <h2 className="text-2xl font-heading text-foreground">Inquiry Detail</h2>
-        <p className="text-sm text-foreground/60">Provide your details to initiate a discrete consultation.</p>
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-12" id="inquiry-form">
+      <div className="flex flex-col gap-3 mb-4">
+        <h2 className="text-3xl font-heading text-foreground tracking-tight">Inquiry Detail</h2>
+        <p className="text-base text-foreground/50 font-sans font-light">Provide your details to initiate a discrete consultation.</p>
       </div>
 
-      <div className="grid gap-8">
+      <div className="flex flex-col gap-12">
         {/* Full Name */}
         <div className="relative group">
           <input
@@ -95,18 +119,19 @@ export function ContactForm() {
             type="text"
             placeholder=" "
             className={cn(
-              "w-full bg-transparent border-0 border-b border-white/20 px-0 py-3 text-foreground focus:ring-0 focus:border-primary transition-colors peer",
+              "w-full bg-transparent border-0 border-b border-white/10 px-0 py-4 text-lg text-foreground focus:ring-0 focus:border-primary transition-all duration-300 peer",
               errors.name && "border-red-500/50"
             )}
           />
           <label 
             htmlFor="name"
-            className="absolute left-0 -top-3.5 text-foreground/50 text-xs transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-xs peer-focus:text-primary uppercase tracking-widest"
+            className="absolute left-0 top-4 text-foreground/40 text-lg transition-all duration-300 peer-placeholder-shown:top-4 peer-placeholder-shown:text-lg peer-focus:-top-4 peer-focus:text-xs peer-focus:text-primary uppercase tracking-[0.2em] font-bold"
           >
             Full Name
           </label>
+          <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-500 group-focus-within:w-full"></div>
           {errors.name && (
-            <span className="text-[10px] text-red-500 mt-1 uppercase tracking-wider">{errors.name.message}</span>
+            <span className="text-[10px] text-red-500 mt-2 block uppercase tracking-wider">{errors.name.message}</span>
           )}
         </div>
 
@@ -118,41 +143,63 @@ export function ContactForm() {
             type="email"
             placeholder=" "
             className={cn(
-              "w-full bg-transparent border-0 border-b border-white/20 px-0 py-3 text-foreground focus:ring-0 focus:border-primary transition-colors peer",
+              "w-full bg-transparent border-0 border-b border-white/10 px-0 py-4 text-lg text-foreground focus:ring-0 focus:border-primary transition-all duration-300 peer",
               errors.email && "border-red-500/50"
             )}
           />
           <label 
             htmlFor="email"
-            className="absolute left-0 -top-3.5 text-foreground/50 text-xs transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-xs peer-focus:text-primary uppercase tracking-widest"
+            className="absolute left-0 top-4 text-foreground/40 text-lg transition-all duration-300 peer-placeholder-shown:top-4 peer-placeholder-shown:text-lg peer-focus:-top-4 peer-focus:text-xs peer-focus:text-primary uppercase tracking-[0.2em] font-bold"
           >
             Email Address
           </label>
+          <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-500 group-focus-within:w-full"></div>
           {errors.email && (
-            <span className="text-[10px] text-red-500 mt-1 uppercase tracking-wider">{errors.email.message}</span>
+            <span className="text-[10px] text-red-500 mt-2 block uppercase tracking-wider">{errors.email.message}</span>
           )}
         </div>
 
-        {/* Phone Number */}
+        {/* Phone Number with Country Code */}
         <div className="relative group">
-          <input
-            {...register('phone')}
-            id="phone"
-            type="tel"
-            placeholder=" "
-            className={cn(
-              "w-full bg-transparent border-0 border-b border-white/20 px-0 py-3 text-foreground focus:ring-0 focus:border-primary transition-colors peer",
-              errors.phone && "border-red-500/50"
-            )}
-          />
-          <label 
-            htmlFor="phone"
-            className="absolute left-0 -top-3.5 text-foreground/50 text-xs transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-xs peer-focus:text-primary uppercase tracking-widest"
-          >
-            Phone Number
-          </label>
+          <div className="flex gap-4">
+            <div className="relative shrink-0">
+              <select
+                value={countryCode}
+                onChange={(e) => setCountryCode(e.target.value)}
+                className="bg-transparent border-0 border-b border-white/10 px-0 py-4 text-lg text-foreground focus:ring-0 focus:border-primary appearance-none cursor-pointer pr-8 font-sans"
+              >
+                {countries.map((c) => (
+                  <option key={c.code} value={c.code} className="bg-brand-dark text-foreground">
+                    {c.flag} {c.code}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 text-primary pointer-events-none" />
+            </div>
+            
+            <div className="relative grow">
+              <input
+                {...register('phone')}
+                id="phone"
+                type="tel"
+                placeholder=" "
+                className={cn(
+                  "w-full bg-transparent border-0 border-b border-white/10 px-0 py-4 text-lg text-foreground focus:ring-0 focus:border-primary transition-all duration-300 peer",
+                  errors.phone && "border-red-500/50"
+                )}
+              />
+              <label 
+                htmlFor="phone"
+                className="absolute left-0 top-4 text-foreground/40 text-lg transition-all duration-300 peer-placeholder-shown:top-4 peer-placeholder-shown:text-lg peer-focus:-top-4 peer-focus:text-xs peer-focus:text-primary uppercase tracking-[0.2em] font-bold"
+              >
+                Phone Number
+              </label>
+            </div>
+          </div>
+          <div className="absolute bottom-0 left-0 w-full h-0.5 bg-white/10"></div>
+          <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-500 group-focus-within:w-full"></div>
           {errors.phone && (
-            <span className="text-[10px] text-red-500 mt-1 uppercase tracking-wider">{errors.phone.message}</span>
+            <span className="text-[10px] text-red-500 mt-2 block uppercase tracking-wider">{errors.phone.message}</span>
           )}
         </div>
 
@@ -162,7 +209,7 @@ export function ContactForm() {
             {...register('inquiryType')}
             id="inquiryType"
             className={cn(
-              "w-full bg-transparent border-0 border-b border-white/20 px-0 py-3 text-foreground focus:ring-0 focus:border-primary transition-colors appearance-none cursor-pointer",
+              "w-full bg-transparent border-0 border-b border-white/10 px-0 py-4 text-lg text-foreground focus:ring-0 focus:border-primary transition-all duration-300 appearance-none cursor-pointer",
               errors.inquiryType && "border-red-500/50"
             )}
           >
@@ -174,38 +221,40 @@ export function ContactForm() {
           </select>
           <label 
             htmlFor="inquiryType"
-            className="absolute left-0 -top-3.5 text-primary text-xs uppercase tracking-widest"
+            className="absolute left-0 -top-4 text-primary text-[10px] uppercase tracking-[0.2em] font-bold"
           >
             Inquiry Type
           </label>
           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-primary">
             <ChevronDown className="w-5 h-5" />
           </div>
+          <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-500 group-focus-within:w-full"></div>
           {errors.inquiryType && (
-            <span className="text-[10px] text-red-500 mt-1 uppercase tracking-wider">{errors.inquiryType.message}</span>
+            <span className="text-[10px] text-red-500 mt-2 block uppercase tracking-wider">{errors.inquiryType.message}</span>
           )}
         </div>
 
         {/* Message */}
-        <div className="relative group mt-4">
+        <div className="relative group mt-6">
           <textarea
             {...register('message')}
             id="message"
             placeholder=" "
             rows={4}
             className={cn(
-              "w-full bg-transparent border-0 border-b border-white/20 px-0 py-3 text-foreground focus:ring-0 focus:border-primary transition-colors peer resize-none",
+              "w-full bg-transparent border-0 border-b border-white/10 px-0 py-4 text-lg text-foreground focus:ring-0 focus:border-primary transition-all duration-300 peer resize-none",
               errors.message && "border-red-500/50"
             )}
           />
           <label 
             htmlFor="message"
-            className="absolute left-0 -top-3.5 text-foreground/50 text-xs transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-xs peer-focus:text-primary uppercase tracking-widest"
+            className="absolute left-0 top-4 text-foreground/40 text-lg transition-all duration-300 peer-placeholder-shown:top-4 peer-placeholder-shown:text-lg peer-focus:-top-4 peer-focus:text-xs peer-focus:text-primary uppercase tracking-[0.2em] font-bold"
           >
             Tell us about your investment goals
           </label>
+          <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-500 group-focus-within:w-full"></div>
           {errors.message && (
-            <span className="text-[10px] text-red-500 mt-1 uppercase tracking-wider">{errors.message.message}</span>
+            <span className="text-[10px] text-red-500 mt-2 block uppercase tracking-wider">{errors.message.message}</span>
           )}
         </div>
       </div>
