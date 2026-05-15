@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { submitInquiry } from '@/app/actions/contact';
 import { CheckCircle2, AlertCircle, Loader2, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { countries } from '@/data/countries';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -23,24 +24,9 @@ export function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [countryCode, setCountryCode] = useState('+254'); // Default to Kenya
+  const [countryCode, setCountryCode] = useState('+254'); // Kenya
 
-  const countries = [
-    { code: '+254', name: 'Kenya', flag: '🇰🇪' },
-    { code: '+1', name: 'USA/Canada', flag: '🇺🇸' },
-    { code: '+44', name: 'UK', flag: '🇬🇧' },
-    { code: '+971', name: 'UAE', flag: '🇦🇪' },
-    { code: '+27', name: 'South Africa', flag: '🇿🇦' },
-    { code: '+234', name: 'Nigeria', flag: '🇳🇬' },
-    { code: '+250', name: 'Rwanda', flag: '🇷🇼' },
-    { code: '+255', name: 'Tanzania', flag: '🇹🇿' },
-    { code: '+256', name: 'Uganda', flag: '🇺🇬' },
-    { code: '+49', name: 'Germany', flag: '🇩🇪' },
-    { code: '+33', name: 'France', flag: '🇫🇷' },
-    { code: '+86', name: 'China', flag: '🇨🇳' },
-    { code: '+91', name: 'India', flag: '🇮🇳' },
-    { code: '+61', name: 'Australia', flag: '🇦🇺' },
-  ];
+  const sortedCountries = [...countries].sort((a, b) => a.name.localeCompare(b.name));
 
   const {
     register,
@@ -168,9 +154,9 @@ export function ContactForm() {
                 onChange={(e) => setCountryCode(e.target.value)}
                 className="bg-transparent border-0 border-b border-white/10 px-0 py-4 text-lg text-foreground focus:ring-0 focus:border-primary appearance-none cursor-pointer pr-8 font-sans"
               >
-                {countries.map((c) => (
-                  <option key={c.code} value={c.code} className="bg-brand-dark text-foreground">
-                    {c.flag} {c.code}
+                {sortedCountries.map((c) => (
+                  <option key={`${c.code}-${c.name}`} value={c.code} className="bg-brand-dark text-foreground">
+                    {c.flag} {c.code} ({c.name})
                   </option>
                 ))}
               </select>
