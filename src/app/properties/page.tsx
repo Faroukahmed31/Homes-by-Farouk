@@ -22,7 +22,9 @@ export default function PropertiesPage() {
           </h1>
         </header>
         
-        <PropertyList />
+        <React.Suspense fallback={<div className="text-white">Loading properties...</div>}>
+          <PropertyList />
+        </React.Suspense>
       </div>
 
       <Footer />

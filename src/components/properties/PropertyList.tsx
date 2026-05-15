@@ -1,22 +1,53 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { PropertyCard } from '@/components/properties/PropertyCard';
 import { properties } from '@/data/properties';
 import { Search } from 'lucide-react';
 
 export function PropertyList() {
+  const searchParams = useSearchParams();
+  
   const [filter, setFilter] = useState({
     status: 'All',
-    search: ''
+    search: '',
+    location: 'any',
+    purpose: 'buy'
   });
+
+  // Initialize filters from URL parameters
+  useEffect(() => {
+    const statusParam = searchParams.get('status');
+    const locationParam = searchParams.get('location');
+    const purposeParam = searchParams.get('purpose');
+    
+    setFilter(prev => ({
+      ...prev,
+      status: statusParam === 'ready' ? 'Ready' : statusParam === 'off-plan' ? 'Off-Plan' : 'All',
+      location: locationParam || 'any',
+      purpose: purposeParam || 'buy'
+    }));
+  }, [searchParams]);
 
   const filteredProperties = useMemo(() => {
     return properties.filter(p => {
+      // Status Match
       const matchStatus = filter.status === 'All' || p.status === filter.status;
+      
+      // Search Match
       const matchSearch = p.title.toLowerCase().includes(filter.search.toLowerCase()) || 
                           p.location.toLowerCase().includes(filter.search.toLowerCase());
-      return matchStatus && matchSearch;
+      
+      // Location Match
+      const matchLocation = filter.location === 'any' || 
+                            p.location.toLowerCase().includes(filter.location.toLowerCase());
+
+      // Note: Currently properties don't have a 'purpose' field, 
+      // but we handle it here for future expansion or mapping.
+      // If purpose is 'rent', we typically look for 'Ready' units anyway as per user request.
+      
+      return matchStatus && matchSearch && matchLocation;
     });
   }, [filter]);
 
@@ -43,7 +74,18 @@ export function PropertyList() {
             <option className="bg-[#131313]" value="All">All Status</option>
             <option className="bg-[#131313]" value="Ready">Ready to Move In</option>
             <option className="bg-[#131313]" value="Off-Plan">Off-Plan</option>
-            <option className="bg-[#131313]" value="Rental">Rentals</option>
+          </select>
+          
+          <select 
+            className="bg-transparent border-0 border-b border-primary/30 text-white py-2 focus:ring-0 cursor-pointer font-sans"
+            value={filter.location}
+            onChange={(e) => setFilter({...filter, location: e.target.value})}
+          >
+            <option className="bg-[#131313]" value="any">Any Location</option>
+            <option className="bg-[#131313]" value="westlands">Westlands</option>
+            <option className="bg-[#131313]" value="kilimani">Kilimani</option>
+            <option className="bg-[#131313]" value="karen">Karen</option>
+            <option className="bg-[#131313]" value="muthaiga">Muthaiga</option>
           </select>
         </div>
       </div>
