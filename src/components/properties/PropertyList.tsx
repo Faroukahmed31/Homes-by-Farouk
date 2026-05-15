@@ -60,7 +60,7 @@ export function PropertyList() {
   return (
     <div className="w-full">
       {/* Filters Bar */}
-      <div className="flex flex-col md:flex-row gap-6 mb-12 glass-panel p-6 gold-border">
+      <div className="flex flex-col lg:flex-row gap-6 mb-12 glass-panel p-6 gold-border">
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
           <input 
@@ -71,9 +71,9 @@ export function PropertyList() {
           />
         </div>
         
-        <div className="flex gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:w-2/3">
           <select 
-            className="bg-transparent border-0 border-b border-primary/30 text-white py-2 focus:ring-0 cursor-pointer font-sans"
+            className="bg-transparent border-0 border-b border-primary/30 text-white py-2 focus:ring-0 cursor-pointer font-sans w-full"
             value={filter.purpose}
             onChange={(e) => setFilter({...filter, purpose: e.target.value as 'buy' | 'rent'})}
           >
@@ -82,7 +82,7 @@ export function PropertyList() {
           </select>
 
           <select 
-            className="bg-transparent border-0 border-b border-primary/30 text-white py-2 focus:ring-0 cursor-pointer font-sans"
+            className="bg-transparent border-0 border-b border-primary/30 text-white py-2 focus:ring-0 cursor-pointer font-sans w-full"
             value={filter.status}
             onChange={(e) => setFilter({...filter, status: e.target.value})}
           >
@@ -92,7 +92,7 @@ export function PropertyList() {
           </select>
           
           <select 
-            className="bg-transparent border-0 border-b border-primary/30 text-white py-2 focus:ring-0 cursor-pointer font-sans"
+            className="bg-transparent border-0 border-b border-primary/30 text-white py-2 focus:ring-0 cursor-pointer font-sans w-full"
             value={filter.location}
             onChange={(e) => setFilter({...filter, location: e.target.value})}
           >
