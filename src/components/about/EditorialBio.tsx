@@ -42,7 +42,7 @@ export function EditorialBio() {
           <p className="font-sans text-lg md:text-xl text-on-surface-variant mb-6 leading-relaxed">
             {narrative.paragraphs[0]}
           </p>
-          <p className="font-sans text-base text-foreground leading-relaxed">
+          <p className="font-sans text-base text-white leading-relaxed">
             {narrative.paragraphs[1]}
           </p>
         </motion.div>
@@ -55,7 +55,7 @@ export function EditorialBio() {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="col-span-12 md:col-span-5"
         >
-          <p className="font-sans text-base text-foreground mb-8 leading-relaxed">
+          <p className="font-sans text-base text-white mb-8 leading-relaxed">
             {narrative.paragraphs[2]}
           </p>
           
