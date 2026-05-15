@@ -26,9 +26,16 @@ export function PropertyList() {
       ...prev,
       status: statusParam === 'ready' ? 'Ready' : statusParam === 'off-plan' ? 'Off-Plan' : 'All',
       location: locationParam || 'any',
-      purpose: purposeParam || 'buy'
+      purpose: (purposeParam as 'buy' | 'rent') || 'buy'
     }));
   }, [searchParams]);
+
+  // Sync purpose and status: Rent always shows Ready units
+  useEffect(() => {
+    if (filter.purpose === 'rent') {
+      setFilter(prev => ({ ...prev, status: 'Ready' }));
+    }
+  }, [filter.purpose]);
 
   const filteredProperties = useMemo(() => {
     return properties.filter(p => {
