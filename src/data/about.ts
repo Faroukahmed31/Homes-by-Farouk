@@ -34,6 +34,6 @@ export const aboutData = {
   cta: {
     headline: "Ready to elevate your investment strategy?",
     buttonLabel: "Let’s Discuss Your Portfolio",
-    subtext: "Privately Managed Assets • Nairobi • London • Dubai",
+    subtext: "Privately Managed Assets • Based in Nairobi • Global Portfolios",
   }
 };
