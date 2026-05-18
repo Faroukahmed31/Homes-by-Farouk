@@ -10,6 +10,11 @@ export function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
+  // WhatsApp Configuration
+  const WHATSAPP_NUMBER = "254721599075";
+  const WHATSAPP_MESSAGE = "Hi Farouk, I am on your website and I'd love to discuss my property goals in Nairobi with you. Are you available for a quick chat?";
+  const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
+
   const navLinks = [
     { name: 'Home', href: '/' },
     { name: 'Properties', href: '/properties' },
@@ -49,9 +54,14 @@ export function Navbar() {
           })}
         </nav>
 
-        <Link href="/contact" className="hidden md:inline-flex red-button px-8 py-4 items-center justify-center text-xs font-bold">
+        <a 
+          href={WHATSAPP_URL} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="hidden md:inline-flex red-button px-8 py-4 items-center justify-center text-xs font-bold"
+        >
           Enquire Now
-        </Link>
+        </a>
 
         {/* Mobile Menu Toggle */}
         <button 
@@ -84,13 +94,15 @@ export function Navbar() {
               </Link>
             );
           })}
-          <Link 
-            href="/contact" 
+          <a 
+            href={WHATSAPP_URL} 
+            target="_blank" 
+            rel="noopener noreferrer"
             onClick={() => setIsOpen(false)}
             className="w-full red-button py-4 text-center text-xs font-bold tracking-[0.2em]"
           >
             ENQUIRE NOW
-          </Link>
+          </a>
         </div>
       </div>
     </header>
