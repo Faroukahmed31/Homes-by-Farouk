@@ -33,6 +33,8 @@ export async function initPropertiesTable() {
 
     // Ensure map_link column exists
     await sql`ALTER TABLE properties ADD COLUMN IF NOT EXISTS map_link TEXT DEFAULT '';`;
+    // Ensure map_embed_url column exists
+    await sql`ALTER TABLE properties ADD COLUMN IF NOT EXISTS map_embed_url TEXT DEFAULT '';`;
 
     // 2. Check if the table is currently empty
     const countResult = await sql`SELECT COUNT(*)::integer as count FROM properties;`;
@@ -47,7 +49,7 @@ export async function initPropertiesTable() {
             slug, title, location, description, long_description, 
             bedrooms, bathrooms, square_meters, completion_date, 
             status, purpose, starting_price, hero_image, gallery_images, 
-            units, amenities, location_features, map_image, map_link
+            units, amenities, location_features, map_image, map_link, map_embed_url
           ) VALUES (
             ${item.slug}, ${item.title}, ${item.location}, ${item.description}, 
             ${item.longDescription}, ${item.bedrooms}, ${item.bathrooms}, 
@@ -55,7 +57,7 @@ export async function initPropertiesTable() {
             ${item.purpose}, ${item.startingPrice}, ${item.heroImage}, 
             ${item.galleryImages}, ${JSON.stringify(item.units)}, 
             ${JSON.stringify(item.amenities)}, ${item.locationFeatures}, 
-            ${item.mapImage || ''}, ''
+            ${item.mapImage || ''}, '', ''
           ) ON CONFLICT (slug) DO NOTHING;
         `;
       }
@@ -88,6 +90,7 @@ function mapDbRowToProperty(row: any): Property {
     locationFeatures: row.location_features || [],
     mapImage: row.map_image || '',
     mapLink: row.map_link || '',
+    mapEmbedUrl: row.map_embed_url || '',
   };
 }
 

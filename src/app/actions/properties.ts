@@ -4,6 +4,18 @@ import { neon } from '@neondatabase/serverless';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
+function extractMapSrc(input: string): string {
+  if (!input) return '';
+  const trimmed = input.trim();
+  if (trimmed.startsWith('<iframe')) {
+    const match = trimmed.match(/src=["']([^"']+)["']/i);
+    if (match && match[1]) {
+      return match[1];
+    }
+  }
+  return trimmed;
+}
+
 export async function addPropertyAction(formData: FormData) {
   const sql = neon(process.env.POSTGRES_URL || '');
   
@@ -22,6 +34,8 @@ export async function addPropertyAction(formData: FormData) {
   const heroImage = formData.get('heroImage') as string;
   const mapImage = (formData.get('mapImage') as string) || '';
   const mapLink = (formData.get('mapLink') as string) || '';
+  const mapEmbedUrlRaw = (formData.get('mapEmbedUrl') as string) || '';
+  const mapEmbedUrl = extractMapSrc(mapEmbedUrlRaw);
 
   // Format arrays (split by newline)
   const longDescription = (formData.get('longDescription') as string)
@@ -60,7 +74,7 @@ export async function addPropertyAction(formData: FormData) {
         slug, title, location, description, long_description, 
         bedrooms, bathrooms, square_meters, completion_date, 
         status, purpose, starting_price, hero_image, gallery_images, 
-        units, amenities, location_features, map_image, map_link
+        units, amenities, location_features, map_image, map_link, map_embed_url
       ) VALUES (
         ${slug}, ${title}, ${location}, ${description}, 
         ${longDescription}, ${bedrooms}, ${bathrooms}, 
@@ -68,7 +82,7 @@ export async function addPropertyAction(formData: FormData) {
         ${purpose}, ${startingPrice}, ${heroImage}, 
         ${galleryImages}, ${JSON.stringify(units)}, 
         ${JSON.stringify(amenities)}, ${locationFeatures}, 
-        ${mapImage}, ${mapLink}
+        ${mapImage}, ${mapLink}, ${mapEmbedUrl}
       ) ON CONFLICT (slug) DO UPDATE SET
         title = EXCLUDED.title,
         location = EXCLUDED.location,
@@ -87,7 +101,8 @@ export async function addPropertyAction(formData: FormData) {
         amenities = EXCLUDED.amenities,
         location_features = EXCLUDED.location_features,
         map_image = EXCLUDED.map_image,
-        map_link = EXCLUDED.map_link;
+        map_link = EXCLUDED.map_link,
+        map_embed_url = EXCLUDED.map_embed_url;
     `;
 
     // Revalidate paths so the new property shows up instantly

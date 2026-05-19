@@ -106,7 +106,7 @@ export function PropertyDetails({ property }: PropertyDetailsProps) {
             title={`${property.title} location map`}
             loading="lazy"
             allowFullScreen
-            src={`https://maps.google.com/maps?q=${encodeURIComponent(property.mapLink || (property.title + ', ' + property.location))}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+            src={property.mapEmbedUrl || `https://maps.google.com/maps?q=${encodeURIComponent(property.mapLink || (property.title + ', ' + property.location))}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
           />
         </div>
       </section>

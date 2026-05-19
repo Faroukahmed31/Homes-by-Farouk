@@ -32,4 +32,5 @@ export interface Property {
   locationFeatures: string[];
   mapImage: string;
   mapLink?: string;
+  mapEmbedUrl?: string;
 }

@@ -252,7 +252,7 @@ export function AdminPropertyForm() {
       </div>
 
       {/* Media Assets & Map Integration */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="block text-[10px] uppercase tracking-widest font-bold text-primary mb-2">Hero Header Image URL</label>
           <input 
@@ -281,6 +281,16 @@ export function AdminPropertyForm() {
             name="mapLink"
             className="w-full bg-transparent border-b border-primary/30 py-2 focus:border-primary outline-none transition-colors text-xs"
             placeholder="e.g. Westlands Road, Nairobi or -1.2612, 36.8012"
+          />
+        </div>
+
+        <div>
+          <label className="block text-[10px] uppercase tracking-widest font-bold text-primary mb-2">Google Maps Embed URL / Iframe HTML (Optional)</label>
+          <input 
+            type="text" 
+            name="mapEmbedUrl"
+            className="w-full bg-transparent border-b border-primary/30 py-2 focus:border-primary outline-none transition-colors text-xs"
+            placeholder="Paste <iframe ...> code or direct embed URL"
           />
         </div>
       </div>
