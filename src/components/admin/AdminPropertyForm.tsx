@@ -96,7 +96,7 @@ export function AdminPropertyForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-12 max-w-4xl bg-[#1c1b1b] p-8 md:p-12 gold-border">
+    <form onSubmit={handleSubmit} encType="multipart/form-data" className="space-y-12 max-w-4xl bg-[#1c1b1b] p-8 md:p-12 gold-border">
       
       <div className="flex items-center gap-4 border-b border-primary/20 pb-6 mb-6">
         <Link href="/admin/properties" className="text-muted-foreground hover:text-white transition-colors">
@@ -252,26 +252,61 @@ export function AdminPropertyForm() {
       </div>
 
       {/* Media Assets & Map Integration */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label className="block text-[10px] uppercase tracking-widest font-bold text-primary mb-2">Hero Header Image URL</label>
-          <input 
-            type="url" 
-            name="heroImage"
-            required
-            className="w-full bg-transparent border-b border-primary/30 py-2 focus:border-primary outline-none transition-colors text-xs font-mono"
-            placeholder="https://example.com/hero.jpg"
-          />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-primary/10 pt-8">
+        <div className="space-y-3">
+          <label className="block text-[10px] uppercase tracking-widest font-bold text-primary">Hero Header Image</label>
+          <div className="bg-[#131313] p-4 border border-white/5 space-y-3">
+            <div>
+              <span className="text-[9px] text-muted-foreground uppercase tracking-widest block mb-1">Upload from computer:</span>
+              <input 
+                type="file" 
+                name="heroImageFile"
+                accept="image/*"
+                className="block w-full text-xs text-muted-foreground file:mr-4 file:py-2 file:px-4 file:border file:border-primary/40 file:bg-transparent file:text-primary file:text-xs file:font-bold hover:file:bg-primary hover:file:text-black file:transition-all cursor-pointer outline-none"
+              />
+            </div>
+            <div className="relative flex py-2 items-center">
+              <div className="flex-grow border-t border-white/5"></div>
+              <span className="flex-shrink mx-4 text-[9px] text-muted-foreground uppercase tracking-widest">Or URL</span>
+              <div className="flex-grow border-t border-white/5"></div>
+            </div>
+            <div>
+              <input 
+                type="text" 
+                name="heroImage"
+                className="w-full bg-transparent border-b border-primary/30 py-2 focus:border-primary outline-none transition-colors text-xs font-mono text-foreground"
+                placeholder="https://example.com/hero.jpg"
+              />
+            </div>
+          </div>
         </div>
 
-        <div>
-          <label className="block text-[10px] uppercase tracking-widest font-bold text-primary mb-2">Map layout Image URL (Optional)</label>
-          <input 
-            type="url" 
-            name="mapImage"
-            className="w-full bg-transparent border-b border-primary/30 py-2 focus:border-primary outline-none transition-colors text-xs font-mono"
-            placeholder="https://example.com/map.jpg"
-          />
+        <div className="space-y-3">
+          <label className="block text-[10px] uppercase tracking-widest font-bold text-primary">Map Layout Image (Optional)</label>
+          <div className="bg-[#131313] p-4 border border-white/5 space-y-3">
+            <div>
+              <span className="text-[9px] text-muted-foreground uppercase tracking-widest block mb-1">Upload from computer:</span>
+              <input 
+                type="file" 
+                name="mapImageFile"
+                accept="image/*"
+                className="block w-full text-xs text-muted-foreground file:mr-4 file:py-2 file:px-4 file:border file:border-primary/40 file:bg-transparent file:text-primary file:text-xs file:font-bold hover:file:bg-primary hover:file:text-black file:transition-all cursor-pointer outline-none"
+              />
+            </div>
+            <div className="relative flex py-2 items-center">
+              <div className="flex-grow border-t border-white/5"></div>
+              <span className="flex-shrink mx-4 text-[9px] text-muted-foreground uppercase tracking-widest">Or URL</span>
+              <div className="flex-grow border-t border-white/5"></div>
+            </div>
+            <div>
+              <input 
+                type="text" 
+                name="mapImage"
+                className="w-full bg-transparent border-b border-primary/30 py-2 focus:border-primary outline-none transition-colors text-xs font-mono text-foreground"
+                placeholder="https://example.com/map.jpg"
+              />
+            </div>
+          </div>
         </div>
 
         <div>
@@ -295,15 +330,30 @@ export function AdminPropertyForm() {
         </div>
       </div>
 
-      <div>
-        <label className="block text-[10px] uppercase tracking-widest font-bold text-primary mb-2">Gallery Slide Images (One URL per line)</label>
-        <textarea 
-          name="galleryImages"
-          required
-          rows={3}
-          className="w-full bg-[#131313] border border-primary/30 p-3 focus:border-primary outline-none transition-colors resize-y text-xs font-mono"
-          placeholder="https://example.com/slide1.jpg&#10;https://example.com/slide2.jpg"
-        />
+      <div className="border-t border-primary/10 pt-8 space-y-3">
+        <label className="block text-[10px] uppercase tracking-widest font-bold text-primary">Gallery Slide Images</label>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-[#131313] p-4 border border-white/5">
+          <div className="space-y-2">
+            <span className="text-[9px] text-muted-foreground uppercase tracking-widest block">Upload files from computer:</span>
+            <input 
+              type="file" 
+              name="galleryImageFiles"
+              accept="image/*"
+              multiple
+              className="block w-full text-xs text-muted-foreground file:mr-4 file:py-2 file:px-4 file:border file:border-primary/40 file:bg-transparent file:text-primary file:text-xs file:font-bold hover:file:bg-primary hover:file:text-black file:transition-all cursor-pointer outline-none"
+            />
+            <span className="text-[9px] text-muted-foreground/60 italic block">You can select multiple files at once.</span>
+          </div>
+          <div className="space-y-2">
+            <span className="text-[9px] text-muted-foreground uppercase tracking-widest block">Or enter URLs (One URL per line):</span>
+            <textarea 
+              name="galleryImages"
+              rows={3}
+              className="w-full bg-transparent border border-white/10 p-3 focus:border-primary outline-none transition-colors resize-y text-xs font-mono text-foreground"
+              placeholder="https://example.com/slide1.jpg&#10;https://example.com/slide2.jpg"
+            />
+          </div>
+        </div>
       </div>
 
       {/* Dynamic Unit Options Builder */}

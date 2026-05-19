@@ -3,6 +3,35 @@
 import { neon } from '@neondatabase/serverless';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { writeFile, mkdir } from 'fs/promises';
+import path from 'path';
+
+async function saveUploadedFile(file: any): Promise<string> {
+  if (!file || typeof file !== 'object' || !('arrayBuffer' in file) || !file.name || file.size === 0) {
+    return '';
+  }
+  
+  try {
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+    
+    // Ensure public/uploads directory exists
+    const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+    await mkdir(uploadDir, { recursive: true });
+    
+    // Make filename unique
+    const timestamp = Date.now();
+    const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+    const filename = `${timestamp}_${safeName}`;
+    const filepath = path.join(uploadDir, filename);
+    
+    await writeFile(filepath, buffer);
+    return `/uploads/${filename}`;
+  } catch (error) {
+    console.error('Failed to save uploaded file:', error);
+    return '';
+  }
+}
 
 function extractMapSrc(input: string): string {
   if (!input) return '';
@@ -68,8 +97,26 @@ export async function addPropertyAction(formData: FormData) {
   const status = formData.get('status') as string;
   const purpose = formData.get('purpose') as string;
   const startingPrice = Number(formData.get('startingPrice'));
-  const heroImage = formData.get('heroImage') as string;
-  const mapImage = (formData.get('mapImage') as string) || '';
+  // Handle Hero Image upload or URL
+  const heroImageFile = formData.get('heroImageFile');
+  let heroImage = '';
+  if (heroImageFile && typeof heroImageFile === 'object' && (heroImageFile as any).size > 0) {
+    heroImage = await saveUploadedFile(heroImageFile);
+  }
+  if (!heroImage) {
+    heroImage = (formData.get('heroImage') as string) || '';
+  }
+
+  // Handle Map Layout Image upload or URL
+  const mapImageFile = formData.get('mapImageFile');
+  let mapImage = '';
+  if (mapImageFile && typeof mapImageFile === 'object' && (mapImageFile as any).size > 0) {
+    mapImage = await saveUploadedFile(mapImageFile);
+  }
+  if (!mapImage) {
+    mapImage = (formData.get('mapImage') as string) || '';
+  }
+
   const mapLink = (formData.get('mapLink') as string) || '';
   const mapEmbedUrlRaw = (formData.get('mapEmbedUrl') as string) || '';
   const mapEmbedUrl = extractMapSrc(mapEmbedUrlRaw);
@@ -80,10 +127,22 @@ export async function addPropertyAction(formData: FormData) {
     .map(s => s.trim())
     .filter(s => s.length > 0);
     
-  const galleryImages = (formData.get('galleryImages') as string)
+  // Handle Gallery Images upload + URL list
+  const galleryImageFiles = formData.getAll('galleryImageFiles');
+  const uploadedGalleryUrls: string[] = [];
+  for (const file of galleryImageFiles) {
+    if (file && typeof file === 'object' && (file as any).size > 0) {
+      const url = await saveUploadedFile(file);
+      if (url) uploadedGalleryUrls.push(url);
+    }
+  }
+  
+  const manualGalleryUrls = (formData.get('galleryImages') as string || '')
     .split('\n')
     .map(s => s.trim())
     .filter(s => s.length > 0);
+    
+  const galleryImages = [...uploadedGalleryUrls, ...manualGalleryUrls];
     
   const locationFeatures = (formData.get('locationFeatures') as string)
     .split('\n')
