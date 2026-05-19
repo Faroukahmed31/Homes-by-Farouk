@@ -7,12 +7,49 @@ import { redirect } from 'next/navigation';
 function extractMapSrc(input: string): string {
   if (!input) return '';
   const trimmed = input.trim();
+
+  // If it's already an iframe, extract the src
   if (trimmed.startsWith('<iframe')) {
     const match = trimmed.match(/src=["']([^"']+)["']/i);
     if (match && match[1]) {
       return match[1];
     }
   }
+
+  // If it's a standard Google Maps URL, check if we can parse it
+  if (trimmed.includes('google.com/maps') || trimmed.includes('maps.google.com')) {
+    // 1. Check if it's already an embed URL
+    if (trimmed.includes('/embed') || trimmed.includes('output=embed')) {
+      return trimmed;
+    }
+    
+    // 2. Try to extract query parameter from url (e.g. ?q=...)
+    const qParamMatch = trimmed.match(/[?&]q=([^&]+)/);
+    if (qParamMatch && qParamMatch[1]) {
+      const qVal = decodeURIComponent(qParamMatch[1].replace(/\+/g, ' '));
+      return `https://maps.google.com/maps?q=${encodeURIComponent(qVal)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+    }
+    
+    // 3. Try to extract place name from path (e.g. /place/Brookside+One+residency)
+    const placeMatch = trimmed.match(/\/place\/([^/@?]+)/);
+    if (placeMatch && placeMatch[1]) {
+      const placeName = decodeURIComponent(placeMatch[1].replace(/\+/g, ' '));
+      return `https://maps.google.com/maps?q=${encodeURIComponent(placeName)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+    }
+
+    // 4. Try to extract exact pin coordinates (e.g. !3d-1.2585756!4d36.7926054)
+    const pinMatch = trimmed.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/);
+    if (pinMatch && pinMatch[1] && pinMatch[2]) {
+      return `https://maps.google.com/maps?q=${pinMatch[1]},${pinMatch[2]}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+    }
+
+    // 5. Try to extract center coordinates (e.g. @-1.2585756,36.7900305)
+    const centerMatch = trimmed.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+    if (centerMatch && centerMatch[1] && centerMatch[2]) {
+      return `https://maps.google.com/maps?q=${centerMatch[1]},${centerMatch[2]}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+    }
+  }
+
   return trimmed;
 }
 

@@ -285,12 +285,12 @@ export function AdminPropertyForm() {
         </div>
 
         <div>
-          <label className="block text-[10px] uppercase tracking-widest font-bold text-primary mb-2">Google Maps Embed URL / Iframe HTML (Optional)</label>
+          <label className="block text-[10px] uppercase tracking-widest font-bold text-primary mb-2">Google Maps Share / Place URL / Embed Iframe (Optional)</label>
           <input 
             type="text" 
             name="mapEmbedUrl"
             className="w-full bg-transparent border-b border-primary/30 py-2 focus:border-primary outline-none transition-colors text-xs"
-            placeholder="Paste <iframe ...> code or direct embed URL"
+            placeholder="Paste share link, place URL (google.com/maps/place/...), or <iframe> code"
           />
         </div>
       </div>
