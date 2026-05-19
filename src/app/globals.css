@@ -110,3 +110,30 @@
     @apply bg-[#C41E3A] text-white hover:brightness-110 transition-all uppercase tracking-widest font-bold;
   }
 }
+
+/* Force pure-black background and white text for autofilled fields (autofill, webkit-autofill) */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus,
+input:autofill,
+input:autofill:hover,
+input:autofill:focus,
+textarea:autofill,
+textarea:autofill:hover,
+textarea:autofill:focus,
+select:autofill,
+select:autofill:hover,
+select:autofill:focus {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  -webkit-box-shadow: 0 0 0px 1000px #0E0F11 inset !important;
+  box-shadow: 0 0 0px 1000px #0E0F11 inset !important;
+  transition: background-color 600000s ease-in-out 0s;
+  caret-color: #ffffff !important;
+}

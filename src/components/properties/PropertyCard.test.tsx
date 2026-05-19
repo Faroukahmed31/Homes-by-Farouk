@@ -1,18 +1,27 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { PropertyCard } from './PropertyCard';
-import { Property } from '@/lib/data';
+import { Property } from '@/types/property';
 
 const mockProperty: Property = {
-  id: 'test-id',
+  slug: 'test-villa',
   title: 'Test Villa',
   location: 'Test Location',
-  price: 10000000,
-  status: 'Ready to Move In',
-  type: 'Buy',
-  category: 'Villa',
-  imageUrl: 'https://example.com/image.jpg',
-  description: 'Test description'
+  description: 'Test description',
+  longDescription: ['Test description paragraphs'],
+  bedrooms: '3',
+  bathrooms: '3',
+  squareMeters: '250',
+  completionDate: 'Ready',
+  status: 'Ready',
+  purpose: 'buy',
+  startingPrice: 10000000,
+  heroImage: 'https://example.com/image.jpg',
+  galleryImages: [],
+  units: [],
+  amenities: [],
+  locationFeatures: [],
+  mapImage: ''
 };
 
 describe('PropertyCard', () => {
@@ -29,6 +38,6 @@ describe('PropertyCard', () => {
 
   it('shows the correct status badge', () => {
     render(<PropertyCard property={mockProperty} />);
-    expect(screen.getByText(/Ready to Move In/i)).toBeInTheDocument();
+    expect(screen.getByText(/Ready/i)).toBeInTheDocument();
   });
 });

@@ -51,6 +51,27 @@ export function InquiryForm({ property }: InquiryFormProps) {
     },
   });
 
+  const getCoordinates = (): Promise<{ lat: number; lon: number } | null> => {
+    return new Promise((resolve) => {
+      if (typeof window === 'undefined' || !navigator.geolocation) {
+        resolve(null);
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          resolve({
+            lat: position.coords.latitude,
+            lon: position.coords.longitude,
+          });
+        },
+        () => {
+          resolve(null);
+        },
+        { timeout: 3000 }
+      );
+    });
+  };
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
     
@@ -62,6 +83,11 @@ export function InquiryForm({ property }: InquiryFormProps) {
     formData.append('guideType', `inquiry-${property.slug}`);
     
     try {
+      const coords = await getCoordinates();
+      if (coords) {
+        formData.append('clientLat', coords.lat.toString());
+        formData.append('clientLon', coords.lon.toString());
+      }
       await captureLead(formData);
       setSuccess(true);
     } catch (error) {

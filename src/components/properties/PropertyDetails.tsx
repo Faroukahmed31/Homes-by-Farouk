@@ -95,27 +95,19 @@ export function PropertyDetails({ property }: PropertyDetailsProps) {
         <h2 className="text-3xl font-heading text-primary mb-8 border-b border-primary/20 pb-4 inline-block">
           Location
         </h2>
-        <div className="w-full h-80 border border-primary/20 relative overflow-hidden group flex items-center justify-center bg-primary/5">
-          {property.mapImage ? (
-            <>
-              <div className="absolute inset-0 bg-primary/10 mix-blend-color group-hover:bg-transparent transition-all duration-700"></div>
-              <img 
-                src={property.mapImage} 
-                alt="Property Location Map" 
-                className="w-full h-full object-cover grayscale brightness-50 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700"
-              />
-            </>
-          ) : (
-            <div className="text-center p-8">
-              <MapPin className="size-12 text-primary/20 mb-4 mx-auto" />
-              <p className="text-foreground/40 font-sans text-sm">Detailed map coordinates coming soon.</p>
-            </div>
-          )}
-          
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="size-16 rounded-full bg-primary/20 animate-ping absolute"></div>
-            <MapPin className="size-10 text-primary relative drop-shadow-[0_0_15px_rgba(242,202,80,0.8)]" />
-          </div>
+        <div className="w-full h-[400px] border border-primary/20 relative overflow-hidden bg-primary/5">
+          <iframe
+            width="100%"
+            height="100%"
+            style={{ 
+              border: 0, 
+              filter: 'invert(90%) hue-rotate(180deg) brightness(85%) contrast(95%)' 
+            }}
+            title={`${property.title} location map`}
+            loading="lazy"
+            allowFullScreen
+            src={`https://maps.google.com/maps?q=${encodeURIComponent(property.mapLink || (property.title + ', ' + property.location))}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+          />
         </div>
       </section>
     </div>

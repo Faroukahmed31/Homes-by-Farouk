@@ -13,10 +13,16 @@ export function WhatsAppButton() {
     const timer = setTimeout(() => {
       setShowTooltip(true);
       // Try to play sound (browser might block auto-play without interaction)
-      if (audioRef.current) {
-        audioRef.current.play().catch(() => {
-          // Ignore auto-play blocks
-        });
+      // Play only once per session to avoid annoying the user on every navigation/refresh
+      const hasPlayedSound = sessionStorage.getItem('whatsapp_sound_played');
+      if (!hasPlayedSound && audioRef.current) {
+        audioRef.current.play()
+          .then(() => {
+            sessionStorage.setItem('whatsapp_sound_played', 'true');
+          })
+          .catch(() => {
+            // Ignore auto-play blocks
+          });
       }
     }, 3000);
 

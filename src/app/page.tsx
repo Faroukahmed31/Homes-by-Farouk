@@ -4,18 +4,20 @@ import { SearchBar } from '@/components/home/SearchBar';
 import { FeaturedProperties } from '@/components/home/FeaturedProperties';
 import { LeadMagnetSplit } from '@/components/home/LeadMagnetSplit';
 import { Footer } from '@/components/layout/Footer';
-import { WhatsAppButton } from '@/components/shared/WhatsAppButton';
+import { getPropertiesFromNeon } from '@/lib/properties';
 
-export default function Home() {
+export default async function Home() {
+  // Pre-fetch properties dynamically from Neon on the server side
+  const properties = await getPropertiesFromNeon();
+
   return (
     <main className="min-h-screen">
       <Navbar />
       <Hero />
       <SearchBar />
-      <FeaturedProperties />
+      <FeaturedProperties initialProperties={properties} />
       <LeadMagnetSplit />
       <Footer />
-      <WhatsAppButton />
     </main>
   );
 }

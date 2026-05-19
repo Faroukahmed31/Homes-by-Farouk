@@ -20,6 +20,8 @@ const mockProperty: Property = {
   squareMeters: '100',
   completionDate: '2025',
   status: 'Ready',
+  purpose: 'buy',
+  startingPrice: 35000000,
   heroImage: '',
   galleryImages: [],
   units: [],

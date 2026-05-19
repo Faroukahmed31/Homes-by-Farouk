@@ -1,12 +1,25 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { PropertyCard } from '../properties/PropertyCard';
-import { properties } from '@/data/properties';
+import { Property } from '@/types/property';
 
-export function FeaturedProperties() {
-  const featured = properties.slice(0, 4);
+interface FeaturedPropertiesProps {
+  initialProperties: Property[];
+}
+
+export function FeaturedProperties({ initialProperties }: FeaturedPropertiesProps) {
+  const [propertiesList, setPropertiesList] = useState<Property[]>(initialProperties);
+
+  // Sync state if initialProperties changes on the server
+  useEffect(() => {
+    if (initialProperties && initialProperties.length > 0) {
+      setPropertiesList(initialProperties);
+    }
+  }, [initialProperties]);
+
+  const featured = propertiesList.slice(0, 4);
   
   return (
     <section className="px-6 md:px-20 max-w-7xl mx-auto mb-32" id="properties">

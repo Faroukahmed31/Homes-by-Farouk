@@ -3,19 +3,19 @@ import { describe, it, expect } from 'vitest';
 import { Navbar } from './Navbar';
 
 describe('Navbar', () => {
-  it('renders the brand name', () => {
+  it('renders the brand name logo alt text', () => {
     render(<Navbar />);
-    expect(screen.getByText(/Homes by Farouk/i)).toBeInTheDocument();
+    expect(screen.getByAltText(/Homes by Farouk/i)).toBeInTheDocument();
   });
 
   it('renders navigation links', () => {
     render(<Navbar />);
     expect(screen.getAllByText(/Home/i).length).toBeGreaterThan(0);
-    expect(screen.getByText(/Properties/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Properties/i).length).toBeGreaterThan(0);
   });
 
   it('renders the Enquire Now CTA', () => {
     render(<Navbar />);
-    expect(screen.getByText(/Enquire Now/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Enquire Now/i).length).toBeGreaterThan(0);
   });
 });

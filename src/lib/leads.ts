@@ -8,12 +8,18 @@ export interface Lead {
   message?: string;
   guideType: string;
   timestamp: string;
+  clientLat?: number;
+  clientLon?: number;
+  clientCity?: string;
+  clientCountry?: string;
+  clientIp?: string;
 }
 
 const sql = neon(process.env.POSTGRES_URL || '');
 
 export async function initLeadsTable() {
   try {
+    // Create base table
     await sql`
       CREATE TABLE IF NOT EXISTS leads (
         id SERIAL PRIMARY KEY,
@@ -25,7 +31,15 @@ export async function initLeadsTable() {
         timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
       );
     `;
-    console.log('Leads table initialized');
+
+    // Ensure location tracking columns exist
+    await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS client_lat NUMERIC;`;
+    await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS client_lon NUMERIC;`;
+    await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS client_city TEXT;`;
+    await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS client_country TEXT;`;
+    await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS client_ip TEXT;`;
+
+    console.log('Leads table initialized with location tracking columns');
   } catch (error) {
     console.error('Failed to initialize leads table:', error);
   }
@@ -37,10 +51,16 @@ export async function saveLead(lead: Omit<Lead, 'id' | 'timestamp'>) {
     await initLeadsTable();
 
     await sql`
-      INSERT INTO leads (name, email, phone, message, guide_type)
-      VALUES (${lead.name}, ${lead.email}, ${lead.phone || null}, ${lead.message || null}, ${lead.guideType});
+      INSERT INTO leads (
+        name, email, phone, message, guide_type, 
+        client_lat, client_lon, client_city, client_country, client_ip
+      )
+      VALUES (
+        ${lead.name}, ${lead.email}, ${lead.phone || null}, ${lead.message || null}, ${lead.guideType},
+        ${lead.clientLat || null}, ${lead.clientLon || null}, ${lead.clientCity || null}, ${lead.clientCountry || null}, ${lead.clientIp || null}
+      );
     `;
-    console.log('Lead saved to database');
+    console.log('Lead saved to database with location context');
     return true;
   } catch (error) {
     console.error('Failed to save lead to database:', error);
@@ -54,7 +74,11 @@ export async function getLeads(): Promise<Lead[]> {
     await initLeadsTable();
 
     const result = await sql`
-      SELECT id, name, email, phone, message, guide_type as "guideType", timestamp 
+      SELECT 
+        id, name, email, phone, message, guide_type as "guideType", timestamp,
+        client_lat as "clientLat", client_lon as "clientLon", 
+        client_city as "clientCity", client_country as "clientCountry", 
+        client_ip as "clientIp"
       FROM leads 
       ORDER BY timestamp DESC;
     `;
@@ -67,6 +91,11 @@ export async function getLeads(): Promise<Lead[]> {
       message: row.message,
       guideType: row.guideType,
       timestamp: row.timestamp ? new Date(row.timestamp).toISOString() : new Date().toISOString(),
+      clientLat: row.clientLat ? Number(row.clientLat) : undefined,
+      clientLon: row.clientLon ? Number(row.clientLon) : undefined,
+      clientCity: row.clientCity || undefined,
+      clientCountry: row.clientCountry || undefined,
+      clientIp: row.clientIp || undefined,
     }));
   } catch (error) {
     console.error('Failed to get leads from database:', error);

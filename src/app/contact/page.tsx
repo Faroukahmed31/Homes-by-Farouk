@@ -3,7 +3,6 @@ import { Metadata } from 'next';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { ContactForm } from '@/components/shared/ContactForm';
-import { WhatsAppButton } from '@/components/shared/WhatsAppButton';
 import { Phone, Mail, MapPin, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -102,7 +101,6 @@ export default function ContactPage() {
       </section>
 
       <Footer />
-      <WhatsAppButton />
     </main>
   );
 }

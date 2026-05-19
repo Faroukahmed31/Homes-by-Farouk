@@ -41,9 +41,9 @@ export function Footer() {
         <div className="flex flex-col items-center md:items-start text-center md:text-left space-y-4">
           <Link href="/" className="inline-block">
             <img 
-              src="/images/homes-by-farouk-website-logo.png" 
+              src="/images/homes-by-farouk-circle-logo.png" 
               alt="Homes by Farouk" 
-              className="h-12 w-auto object-contain brightness-110"
+              className="h-12 w-12 rounded-full object-cover border border-primary/20 hover:border-primary/50 transition-all duration-300 hover:scale-105 brightness-110"
             />
           </Link>
           <p className="text-[11px] uppercase tracking-widest leading-relaxed max-w-[200px] text-white/30">

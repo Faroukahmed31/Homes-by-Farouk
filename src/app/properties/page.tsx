@@ -1,15 +1,18 @@
 import React from 'react';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
-import { WhatsAppButton } from '@/components/shared/WhatsAppButton';
 import { PropertyList } from '@/components/properties/PropertyList';
+import { getPropertiesFromNeon } from '@/lib/properties';
 
 export const metadata = {
   title: 'Luxury Property Listings in Nairobi | Homes by Farouk',
   description: 'Browse our curated selection of premium apartments, villas, and off-plan investments in Nairobi\'s most prestigious neighborhoods.',
 };
 
-export default function PropertiesPage() {
+export default async function PropertiesPage() {
+  // Query listings instantly from Neon on the server side
+  const properties = await getPropertiesFromNeon();
+
   return (
     <main className="min-h-screen pt-32 pb-20">
       <Navbar />
@@ -23,12 +26,11 @@ export default function PropertiesPage() {
         </header>
         
         <React.Suspense fallback={<div className="text-white">Loading properties...</div>}>
-          <PropertyList />
+          <PropertyList initialProperties={properties} />
         </React.Suspense>
       </div>
 
       <Footer />
-      <WhatsAppButton />
     </main>
   );
 }

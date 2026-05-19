@@ -27,9 +27,9 @@ export function Navbar() {
       <div className="flex justify-between items-center max-w-[1440px] mx-auto">
         <Link href="/" className="flex items-center" onClick={() => setIsOpen(false)}>
           <img 
-            src="/images/homes-by-farouk-website-logo.png" 
+            src="/images/homes-by-farouk-circle-logo.png" 
             alt="Homes by Farouk" 
-            className="h-12 md:h-15 w-auto object-contain"
+            className="h-12 w-12 md:h-14 md:w-14 rounded-full object-cover border border-primary/20 hover:border-primary/50 transition-all duration-300 hover:scale-105"
           />
         </Link>
         
@@ -42,7 +42,7 @@ export function Navbar() {
                 key={link.href}
                 href={link.href} 
                 className={cn(
-                  "text-sm transition-all duration-300 hover:opacity-80 hover:text-primary",
+                  "text-xs uppercase tracking-[0.2em] transition-all duration-300 hover:opacity-80 hover:text-primary",
                   isActive 
                     ? "text-primary border-b border-primary font-bold" 
                     : "text-foreground/60"
@@ -58,9 +58,9 @@ export function Navbar() {
           href={WHATSAPP_URL} 
           target="_blank" 
           rel="noopener noreferrer"
-          className="hidden md:inline-flex red-button px-8 py-4 items-center justify-center text-xs font-bold"
+          className="hidden md:inline-flex red-button px-8 py-4 items-center justify-center text-xs font-bold tracking-[0.2em] uppercase"
         >
-          Enquire Now
+          ENQUIRE NOW
         </a>
 
         {/* Mobile Menu Toggle */}

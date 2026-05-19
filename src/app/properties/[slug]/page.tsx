@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { properties } from '@/data/properties';
+import { getPropertyBySlug, getPropertiesFromNeon } from '@/lib/properties';
 import { PropertyHeroSlideshow } from '@/components/properties/PropertyHeroSlideshow';
 import { PropertyStats } from '@/components/properties/PropertyStats';
 import { PropertyDetails } from '@/components/properties/PropertyDetails';
@@ -11,7 +11,9 @@ interface PropertyPageProps {
   params: Promise<{ slug: string }>;
 }
 
+// Generate static params dynamically using listings in Neon
 export async function generateStaticParams() {
+  const properties = await getPropertiesFromNeon();
   return properties.map((property) => ({
     slug: property.slug,
   }));
@@ -19,7 +21,9 @@ export async function generateStaticParams() {
 
 export default async function PropertyPage({ params }: PropertyPageProps) {
   const { slug } = await params;
-  const property = properties.find((p) => p.slug === slug);
+  
+  // Instant serverless Neon query
+  const property = await getPropertyBySlug(slug);
 
   if (!property) {
     notFound();
@@ -50,3 +54,4 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
     </div>
   );
 }
+

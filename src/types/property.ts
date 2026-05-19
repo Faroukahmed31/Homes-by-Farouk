@@ -31,4 +31,5 @@ export interface Property {
   amenities: Amenity[];
   locationFeatures: string[];
   mapImage: string;
+  mapLink?: string;
 }

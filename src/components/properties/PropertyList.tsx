@@ -3,11 +3,16 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { PropertyCard } from '@/components/properties/PropertyCard';
-import { properties } from '@/data/properties';
+import { Property } from '@/types/property';
 import { Search } from 'lucide-react';
 
-export function PropertyList() {
+interface PropertyListProps {
+  initialProperties: Property[];
+}
+
+export function PropertyList({ initialProperties }: PropertyListProps) {
   const searchParams = useSearchParams();
+  const [propertiesList, setPropertiesList] = useState<Property[]>(initialProperties);
   
   const [filter, setFilter] = useState({
     status: 'All',
@@ -15,6 +20,13 @@ export function PropertyList() {
     location: 'any',
     purpose: 'buy'
   });
+
+  // Sync state if initialProperties changes on the server
+  useEffect(() => {
+    if (initialProperties && initialProperties.length > 0) {
+      setPropertiesList(initialProperties);
+    }
+  }, [initialProperties]);
 
   // Initialize filters from URL parameters
   useEffect(() => {
@@ -38,7 +50,7 @@ export function PropertyList() {
   }, [filter.purpose]);
 
   const filteredProperties = useMemo(() => {
-    return properties.filter(p => {
+    return propertiesList.filter(p => {
       // Status Match
       const matchStatus = filter.status === 'All' || p.status === filter.status;
       
@@ -55,7 +67,7 @@ export function PropertyList() {
       
       return matchStatus && matchSearch && matchLocation && matchPurpose;
     });
-  }, [filter]);
+  }, [filter, propertiesList]);
 
   return (
     <div className="w-full">
