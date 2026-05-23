@@ -16,8 +16,8 @@ export function AboutHero() {
         className="w-full md:w-5/12 h-[40vh] md:h-[60vh] relative overflow-hidden"
       >
         <img
-          alt="The Visionary Architect of Homes by Farouk"
-          className="w-full h-full object-cover object-center grayscale hover:grayscale-0 transition-all duration-1000 ease-in-out"
+          alt="Homes by Farouk Premium Office Interior"
+          className="w-full h-full object-cover object-center transition-all duration-1000 ease-in-out"
           src={hero.image}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-background/40 to-transparent"></div>

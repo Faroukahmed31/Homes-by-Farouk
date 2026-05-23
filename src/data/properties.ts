@@ -23,8 +23,8 @@ export const properties: Property[] = [
       'https://lh3.googleusercontent.com/aida-public/AB6AXuDQ6hRUJ-8txTe1MX5EqlaT6oEjB9OagHqcS5wLyw3xc0FY_9fheJjbRbmT1-1xTr4RQR1RazTvs2AWduGZcHfOcQb8nmF4Eiu0VP-99e8dPGIPxh1sosd_cW3GNjg2IwWAx_0LHOt2ZK_F5iY4feELwIM4OoN7W8g0GNkM37hdhxyVv5jHE7mPRDXbAkCK_kT5NcBM8kHepJDq08Axl44THIeYa_tMaO3ikZyGraLuYYW683Xr9u4mXD9t-WxZxx9-y_sZeYCPDiP3'
     ],
     units: [
-      { type: '3 Bedroom Simplex', size: 250, status: 'Available' },
-      { type: '4 Bedroom Duplex', size: 320, status: 'Available' }
+      { type: '3 Bedroom Simplex', size: 250, status: 'Available', price: '35000000' },
+      { type: '4 Bedroom Duplex', size: 320, status: 'Available', price: '45000000' }
     ],
     amenities: [
       { title: 'Infinity Pool', description: 'Heated rooftop pool with panoramic skyline views.', iconName: 'Waves' },
@@ -55,7 +55,7 @@ export const properties: Property[] = [
       'https://lh3.googleusercontent.com/aida-public/AB6AXuAQxsuGnPFCK79ST5gHqe_AtuoCOO6qOOPVdcqAjNhNwHaJ0O3kjJlB999FmIYKsKaZ4dTDUAwOjLF-ZyQ4aKDQFHQH9aLApi_exLk8ujQ5CNc38DZmmCktweL-pr5ibWaJbD6jNU30w3BY5hLMQuzId5CmNyX8DmV73aKEB9A0MMYfVP_RO9grMdpB5uOgqwLxazwVdzM_fU1w6Ndo9RhJ_Xu5gOHfsT9xSdnPH2jkzHdXqnARgQEfxF0nMdO5RaFBh6fKGTaySS2h',
       'https://lh3.googleusercontent.com/aida-public/AB6AXuDQ6hRUJ-8txTe1MX5EqlaT6oEjB9OagHqcS5wLyw3xc0FY_9fheJjbRbmT1-1xTr4RQR1RazTvs2AWduGZcHfOcQb8nmF4Eiu0VP-99e8dPGIPxh1sosd_cW3GNjg2IwWAx_0LHOt2ZK_F5iY4feELwIM4OoN7W8g0GNkM37hdhxyVv5jHE7mPRDXbAkCK_kT5NcBM8kHepJDq08Axl44THIeYa_tMaO3ikZyGraLuYYW683Xr9u4mXD9t-WxZxx9-y_sZeYCPDiP3'
     ],
-    units: [{ type: '2 Bedroom Executive', size: 180, status: 'Available' }],
+    units: [{ type: '2 Bedroom Executive', size: 180, status: 'Available', price: '45000000' }],
     amenities: [{ title: 'Sky Lounge', description: 'Rooftop bar and resident lounge.', iconName: 'Coffee' }],
     locationFeatures: ['Walking distance to offices', 'Sarabi Rooftop nearby'],
     mapImage: ''
@@ -82,7 +82,7 @@ export const properties: Property[] = [
       'https://lh3.googleusercontent.com/aida-public/AB6AXuAQxsuGnPFCK79ST5gHqe_AtuoCOO6qOOPVdcqAjNhNwHaJ0O3kjJlB999FmIYKsKaZ4dTDUAwOjLF-ZyQ4aKDQFHQH9aLApi_exLk8ujQ5CNc38DZmmCktweL-pr5ibWaJbD6jNU30w3BY5hLMQuzId5CmNyX8DmV73aKEB9A0MMYfVP_RO9grMdpB5uOgqwLxazwVdzM_fU1w6Ndo9RhJ_Xu5gOHfsT9xSdnPH2jkzHdXqnARgQEfxF0nMdO5RaFBh6fKGTaySS2h',
       'https://lh3.googleusercontent.com/aida-public/AB6AXuDQ6hRUJ-8txTe1MX5EqlaT6oEjB9OagHqcS5wLyw3xc0FY_9fheJjbRbmT1-1xTr4RQR1RazTvs2AWduGZcHfOcQb8nmF4Eiu0VP-99e8dPGIPxh1sosd_cW3GNjg2IwWAx_0LHOt2ZK_F5iY4feELwIM4OoN7W8g0GNkM37hdhxyVv5jHE7mPRDXbAkCK_kT5NcBM8kHepJDq08Axl44THIeYa_tMaO3ikZyGraLuYYW683Xr9u4mXD9t-WxZxx9-y_sZeYCPDiP3'
     ],
-    units: [{ type: 'Type A Villa', size: 450, status: 'Available' }],
+    units: [{ type: 'Type A Villa', size: 450, status: 'Available', price: '85000000' }],
     amenities: [{ title: 'Private Garden', description: 'Expansive private lawns and landscaping.', iconName: 'Waves' }],
     locationFeatures: ['Near Hub Mall', 'Quiet diplomatic zone'],
     mapImage: ''
@@ -109,7 +109,7 @@ export const properties: Property[] = [
       'https://lh3.googleusercontent.com/aida-public/AB6AXuAQxsuGnPFCK79ST5gHqe_AtuoCOO6qOOPVdcqAjNhNwHaJ0O3kjJlB999FmIYKsKaZ4dTDUAwOjLF-ZyQ4aKDQFHQH9aLApi_exLk8ujQ5CNc38DZmmCktweL-pr5ibWaJbD6jNU30w3BY5hLMQuzId5CmNyX8DmV73aKEB9A0MMYfVP_RO9grMdpB5uOgqwLxazwVdzM_fU1w6Ndo9RhJ_Xu5gOHfsT9xSdnPH2jkzHdXqnARgQEfxF0nMdO5RaFBh6fKGTaySS2h',
       'https://lh3.googleusercontent.com/aida-public/AB6AXuDQ6hRUJ-8txTe1MX5EqlaT6oEjB9OagHqcS5wLyw3xc0FY_9fheJjbRbmT1-1xTr4RQR1RazTvs2AWduGZcHfOcQb8nmF4Eiu0VP-99e8dPGIPxh1sosd_cW3GNjg2IwWAx_0LHOt2ZK_F5iY4feELwIM4OoN7W8g0GNkM37hdhxyVv5jHE7mPRDXbAkCK_kT5NcBM8kHepJDq08Axl44THIeYa_tMaO3ikZyGraLuYYW683Xr9u4mXD9t-WxZxx9-y_sZeYCPDiP3'
     ],
-    units: [{ type: 'Sky Penthouse', size: 280, status: 'Available' }],
+    units: [{ type: 'Sky Penthouse', size: 280, status: 'Available', price: '35000000' }],
     amenities: [{ title: 'Yoga Deck', description: 'Sunrise yoga deck on the 15th floor.', iconName: 'Dumbbell' }],
     locationFeatures: ['Near Yaya Centre', 'Central location'],
     mapImage: ''
@@ -136,7 +136,7 @@ export const properties: Property[] = [
       'https://lh3.googleusercontent.com/aida-public/AB6AXuAQxsuGnPFCK79ST5gHqe_AtuoCOO6qOOPVdcqAjNhNwHaJ0O3kjJlB999FmIYKsKaZ4dTDUAwOjLF-ZyQ4aKDQFHQH9aLApi_exLk8ujQ5CNc38DZmmCktweL-pr5ibWaJbD6jNU30w3BY5hLMQuzId5CmNyX8DmV73aKEB9A0MMYfVP_RO9grMdpB5uOgqwLxazwVdzM_fU1w6Ndo9RhJ_Xu5gOHfsT9xSdnPH2jkzHdXqnARgQEfxF0nMdO5RaFBh6fKGTaySS2h',
       'https://lh3.googleusercontent.com/aida-public/AB6AXuDQ6hRUJ-8txTe1MX5EqlaT6oEjB9OagHqcS5wLyw3xc0FY_9fheJjbRbmT1-1xTr4RQR1RazTvs2AWduGZcHfOcQb8nmF4Eiu0VP-99e8dPGIPxh1sosd_cW3GNjg2IwWAx_0LHOt2ZK_F5iY4feELwIM4OoN7W8g0GNkM37hdhxyVv5jHE7mPRDXbAkCK_kT5NcBM8kHepJDq08Axl44THIeYa_tMaO3ikZyGraLuYYW683Xr9u4mXD9t-WxZxx9-y_sZeYCPDiP3'
     ],
-    units: [{ type: '1 Bedroom Commercial', size: 120, status: 'Available' }],
+    units: [{ type: '1 Bedroom Commercial', size: 120, status: 'Available', price: '120000000' }],
     amenities: [{ title: 'Business Center', description: 'Premium co-working and meeting rooms.', iconName: 'ShieldCheck' }],
     locationFeatures: ['Diplomatic area', 'High security'],
     mapImage: ''

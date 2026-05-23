@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Phone, MessageCircle, CheckCircle2 } from 'lucide-react';
 import { Property } from '@/types/property';
 import { captureLead } from '@/app/actions/leads';
+import { useCurrency } from '@/context/CurrencyContext';
 
 const formSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -25,6 +26,7 @@ interface InquiryFormProps {
 }
 
 export function InquiryForm({ property }: InquiryFormProps) {
+  const { formatPrice, currency, setCurrency } = useCurrency();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -106,11 +108,28 @@ export function InquiryForm({ property }: InquiryFormProps) {
     <Card className="bg-[#1A1A1A] border-primary/20 sticky top-32">
       <CardHeader>
         <CardTitle className="text-primary text-2xl font-heading">Inquire About This Unit</CardTitle>
-        <CardDescription className="text-foreground/60 font-sans flex flex-col gap-2">
+        <CardDescription className="text-foreground/60 font-sans flex flex-col gap-3">
           <span>Register your interest to receive the full brochure and floor plans.</span>
-          <span className="text-primary/80 font-bold text-xs uppercase tracking-widest">
-            Starting From KES {property.startingPrice.toLocaleString()}
-          </span>
+          <div className="flex justify-between items-center bg-white/5 border border-white/10 p-3 mt-1">
+            <span className="text-white font-bold text-[11px] uppercase tracking-wider">
+              Starting From <span className="text-primary">{formatPrice(property.startingPrice)}</span>
+            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-[9px] uppercase tracking-wider text-white/50 font-bold">Currency:</span>
+              <select
+                value={currency}
+                onChange={(e) => setCurrency(e.target.value as any)}
+                className="bg-black/60 border border-primary/30 text-primary rounded-none py-1 px-2 font-sans text-xs tracking-wider uppercase font-bold focus:ring-0 focus:border-primary cursor-pointer hover:bg-black/80 transition-all"
+              >
+                <option className="bg-[#12141a] text-white" value="KES">KES</option>
+                <option className="bg-[#12141a] text-white" value="USD">USD ($)</option>
+                <option className="bg-[#12141a] text-white" value="GBP">GBP (£)</option>
+                <option className="bg-[#12141a] text-white" value="EUR">EUR (€)</option>
+                <option className="bg-[#12141a] text-white" value="AUD">AUD (A$)</option>
+                <option className="bg-[#12141a] text-white" value="CNY">CNY (¥)</option>
+              </select>
+            </div>
+          </div>
         </CardDescription>
       </CardHeader>
       <CardContent>

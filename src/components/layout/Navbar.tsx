@@ -44,7 +44,7 @@ export function Navbar() {
                 className={cn(
                   "text-xs uppercase tracking-[0.2em] transition-all duration-300 hover:opacity-80 hover:text-primary",
                   isActive 
-                    ? "text-primary border-b border-primary font-bold" 
+                    ? "text-primary font-bold" 
                     : "text-foreground/60"
                 )}
               >

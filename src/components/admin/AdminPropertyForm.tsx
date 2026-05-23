@@ -4,10 +4,12 @@ import React, { useState, useEffect } from 'react';
 import { addPropertyAction } from '@/app/actions/properties';
 import { Plus, Trash2, ArrowLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { Property } from '@/types/property';
 
 interface UnitInput {
   type: string;
   size: string;
+  price: string;
   status: 'Available' | 'Reserved' | 'Sold';
 }
 
@@ -17,23 +19,33 @@ interface AmenityInput {
   iconName: string;
 }
 
-export function AdminPropertyForm() {
-  const [title, setTitle] = useState('');
-  const [slug, setSlug] = useState('');
+export function AdminPropertyForm({ property }: { property?: Property }) {
+  const [title, setTitle] = useState(property?.title || '');
+  const [slug, setSlug] = useState(property?.slug || '');
   const [isPending, setIsPending] = useState(false);
   
   // Dynamic lists
-  const [units, setUnits] = useState<UnitInput[]>([
-    { type: '3 Bed Duplex', size: '280', status: 'Available' }
-  ]);
+  const [units, setUnits] = useState<UnitInput[]>(
+    property?.units.map(u => ({
+      type: u.type,
+      size: String(u.size),
+      price: u.price || '',
+      status: u.status
+    })) || [
+      { type: '3 Bed Duplex', size: '280', price: '35000000', status: 'Available' }
+    ]
+  );
   
-  const [amenities, setAmenities] = useState<AmenityInput[]>([
-    { title: 'Infinity Pool', description: 'Heated rooftop pool', iconName: 'Waves' },
-    { title: 'Fitness Gym', description: 'State-of-the-art wellness facility', iconName: 'Dumbbell' }
-  ]);
+  const [amenities, setAmenities] = useState<AmenityInput[]>(
+    property?.amenities || [
+      { title: 'Infinity Pool', description: 'Heated rooftop pool', iconName: 'Waves' },
+      { title: 'Fitness Gym', description: 'State-of-the-art wellness facility', iconName: 'Dumbbell' }
+    ]
+  );
 
   // Auto-generate slug from title
   useEffect(() => {
+    if (property) return;
     const formattedSlug = title
       .toLowerCase()
       .trim()
@@ -41,10 +53,10 @@ export function AdminPropertyForm() {
       .replace(/[\s_-]+/g, '-') // swap spaces/underscores with dashes
       .replace(/^-+|-+$/g, ''); // trim dashes
     setSlug(formattedSlug);
-  }, [title]);
+  }, [title, property]);
 
   const addUnit = () => {
-    setUnits([...units, { type: '', size: '', status: 'Available' }]);
+    setUnits([...units, { type: '', size: '', price: '', status: 'Available' }]);
   };
 
   const removeUnit = (index: number) => {
@@ -77,12 +89,40 @@ export function AdminPropertyForm() {
 
     try {
       const form = e.currentTarget;
-      const formData = new FormData(form);
+      const formData = new FormData();
+      
+      // Copy all non-file fields
+      const originalFormData = new FormData(form);
+      originalFormData.forEach((value, key) => {
+        if (key === 'heroImageFile' || key === 'mapImageFile' || key === 'galleryImageFiles') {
+          return;
+        }
+        formData.append(key, value);
+      });
+
+      // Append file fields only if they have actual files selected
+      const heroImageFileInput = form.querySelector('input[name="heroImageFile"]') as HTMLInputElement;
+      if (heroImageFileInput && heroImageFileInput.files && heroImageFileInput.files.length > 0) {
+        formData.append('heroImageFile', heroImageFileInput.files[0]);
+      }
+
+      const mapImageFileInput = form.querySelector('input[name="mapImageFile"]') as HTMLInputElement;
+      if (mapImageFileInput && mapImageFileInput.files && mapImageFileInput.files.length > 0) {
+        formData.append('mapImageFile', mapImageFileInput.files[0]);
+      }
+
+      const galleryImageFileInput = form.querySelector('input[name="galleryImageFiles"]') as HTMLInputElement;
+      if (galleryImageFileInput && galleryImageFileInput.files) {
+        for (let i = 0; i < galleryImageFileInput.files.length; i++) {
+          formData.append('galleryImageFiles', galleryImageFileInput.files[i]);
+        }
+      }
       
       // Inject processed JSON arrays
       const formattedUnits = units.map(u => ({
         type: u.type,
         size: Number(u.size) || 0,
+        price: u.price || '',
         status: u.status
       }));
       formData.set('units', JSON.stringify(formattedUnits));
@@ -103,8 +143,8 @@ export function AdminPropertyForm() {
           <ArrowLeft size={20} />
         </Link>
         <div>
-          <h2 className="text-2xl font-heading">Add Premium Property</h2>
-          <p className="text-xs text-muted-foreground">Fill out the listing details to publish to the Neon database.</p>
+          <h2 className="text-2xl font-heading">{property ? 'Edit Premium Property' : 'Add Premium Property'}</h2>
+          <p className="text-xs text-muted-foreground">{property ? 'Modify the listing details to update in the Neon database.' : 'Fill out the listing details to publish to the Neon database.'}</p>
         </div>
       </div>
 
@@ -124,14 +164,15 @@ export function AdminPropertyForm() {
         </div>
 
         <div>
-          <label className="block text-[10px] uppercase tracking-widest font-bold text-primary mb-2">URL Slug (Auto-generated)</label>
+          <label className="block text-[10px] uppercase tracking-widest font-bold text-primary mb-2">URL Slug {property ? '(Read Only)' : '(Auto-generated)'}</label>
           <input 
             type="text" 
             name="slug"
             required
+            readOnly={!!property}
             value={slug}
-            onChange={(e) => setSlug(e.target.value)}
-            className="w-full bg-transparent border-b border-primary/30 py-2 focus:border-primary outline-none transition-colors font-mono text-xs text-muted-foreground"
+            onChange={(e) => !property && setSlug(e.target.value)}
+            className={`w-full bg-transparent border-b border-primary/30 py-2 focus:border-primary outline-none transition-colors font-mono text-xs text-muted-foreground ${property ? 'opacity-50 cursor-not-allowed' : ''}`}
             placeholder="slug-value"
           />
         </div>
@@ -142,6 +183,7 @@ export function AdminPropertyForm() {
             type="text" 
             name="location"
             required
+            defaultValue={property?.location}
             className="w-full bg-transparent border-b border-primary/30 py-2 focus:border-primary outline-none transition-colors"
             placeholder="e.g. Westlands, Nairobi"
           />
@@ -153,6 +195,7 @@ export function AdminPropertyForm() {
             type="number" 
             name="startingPrice"
             required
+            defaultValue={property?.startingPrice}
             className="w-full bg-transparent border-b border-primary/30 py-2 focus:border-primary outline-none transition-colors"
             placeholder="e.g. 35000000"
           />
@@ -163,6 +206,7 @@ export function AdminPropertyForm() {
           <select 
             name="purpose"
             required
+            defaultValue={property?.purpose}
             className="w-full bg-[#131313] border-b border-primary/30 py-2 focus:border-primary outline-none transition-colors"
           >
             <option value="buy">For Sale (Buy)</option>
@@ -175,6 +219,7 @@ export function AdminPropertyForm() {
           <select 
             name="status"
             required
+            defaultValue={property?.status}
             className="w-full bg-[#131313] border-b border-primary/30 py-2 focus:border-primary outline-none transition-colors"
           >
             <option value="Off-Plan">Off-Plan</option>
@@ -189,6 +234,7 @@ export function AdminPropertyForm() {
             type="text" 
             name="bedrooms"
             required
+            defaultValue={property?.bedrooms}
             className="w-full bg-transparent border-b border-primary/30 py-2 focus:border-primary outline-none transition-colors"
             placeholder="e.g. 3 - 4 or 3"
           />
@@ -200,6 +246,7 @@ export function AdminPropertyForm() {
             type="text" 
             name="bathrooms"
             required
+            defaultValue={property?.bathrooms}
             className="w-full bg-transparent border-b border-primary/30 py-2 focus:border-primary outline-none transition-colors"
             placeholder="e.g. 3.5 - 4.5 or 4"
           />
@@ -211,6 +258,7 @@ export function AdminPropertyForm() {
             type="text" 
             name="squareMeters"
             required
+            defaultValue={property?.squareMeters}
             className="w-full bg-transparent border-b border-primary/30 py-2 focus:border-primary outline-none transition-colors"
             placeholder="e.g. 250 - 380"
           />
@@ -222,6 +270,7 @@ export function AdminPropertyForm() {
             type="text" 
             name="completionDate"
             required
+            defaultValue={property?.completionDate}
             className="w-full bg-transparent border-b border-primary/30 py-2 focus:border-primary outline-none transition-colors"
             placeholder="e.g. Q4 2026 or Ready"
           />
@@ -235,6 +284,7 @@ export function AdminPropertyForm() {
           type="text" 
           name="description"
           required
+          defaultValue={property?.description}
           className="w-full bg-transparent border-b border-primary/30 py-2 focus:border-primary outline-none transition-colors"
           placeholder="Brief one-liner marketing description..."
         />
@@ -246,6 +296,7 @@ export function AdminPropertyForm() {
           name="longDescription"
           required
           rows={4}
+          defaultValue={property?.longDescription.join('\n')}
           className="w-full bg-[#131313] border border-primary/30 p-3 focus:border-primary outline-none transition-colors resize-y text-sm"
           placeholder="First detailed paragraph describing design.&#10;Second paragraph describing space/location."
         />
@@ -274,6 +325,7 @@ export function AdminPropertyForm() {
               <input 
                 type="text" 
                 name="heroImage"
+                defaultValue={property?.heroImage}
                 className="w-full bg-transparent border-b border-primary/30 py-2 focus:border-primary outline-none transition-colors text-xs font-mono text-foreground"
                 placeholder="https://example.com/hero.jpg"
               />
@@ -302,6 +354,7 @@ export function AdminPropertyForm() {
               <input 
                 type="text" 
                 name="mapImage"
+                defaultValue={property?.mapImage}
                 className="w-full bg-transparent border-b border-primary/30 py-2 focus:border-primary outline-none transition-colors text-xs font-mono text-foreground"
                 placeholder="https://example.com/map.jpg"
               />
@@ -314,6 +367,7 @@ export function AdminPropertyForm() {
           <input 
             type="text" 
             name="mapLink"
+            defaultValue={property?.mapLink}
             className="w-full bg-transparent border-b border-primary/30 py-2 focus:border-primary outline-none transition-colors text-xs"
             placeholder="e.g. Westlands Road, Nairobi or -1.2612, 36.8012"
           />
@@ -324,6 +378,7 @@ export function AdminPropertyForm() {
           <input 
             type="text" 
             name="mapEmbedUrl"
+            defaultValue={property?.mapEmbedUrl}
             className="w-full bg-transparent border-b border-primary/30 py-2 focus:border-primary outline-none transition-colors text-xs"
             placeholder="Paste share link, place URL (google.com/maps/place/...), or <iframe> code"
           />
@@ -349,6 +404,7 @@ export function AdminPropertyForm() {
             <textarea 
               name="galleryImages"
               rows={3}
+              defaultValue={property?.galleryImages.join('\n')}
               className="w-full bg-transparent border border-white/10 p-3 focus:border-primary outline-none transition-colors resize-y text-xs font-mono text-foreground"
               placeholder="https://example.com/slide1.jpg&#10;https://example.com/slide2.jpg"
             />
@@ -371,7 +427,7 @@ export function AdminPropertyForm() {
         
         <div className="space-y-4">
           {units.map((unit, index) => (
-            <div key={index} className="grid grid-cols-1 sm:grid-cols-4 gap-4 items-end bg-[#131313] p-4 border border-white/5">
+            <div key={index} className="grid grid-cols-1 sm:grid-cols-5 gap-4 items-end bg-[#131313] p-4 border border-white/5">
               <div>
                 <span className="text-[9px] uppercase tracking-widest text-muted-foreground mb-1 block">Unit Type/Label</span>
                 <input 
@@ -393,6 +449,17 @@ export function AdminPropertyForm() {
                   onChange={(e) => updateUnit(index, 'size', e.target.value)}
                   className="w-full bg-transparent border-b border-white/20 py-1 text-sm focus:border-primary outline-none transition-colors"
                   placeholder="280"
+                />
+              </div>
+
+              <div>
+                <span className="text-[9px] uppercase tracking-widest text-muted-foreground mb-1 block">Price (KES or Text)</span>
+                <input 
+                  type="text" 
+                  value={unit.price}
+                  onChange={(e) => updateUnit(index, 'price', e.target.value)}
+                  className="w-full bg-transparent border-b border-white/20 py-1 text-sm focus:border-primary outline-none transition-colors"
+                  placeholder="e.g. 35000000 or Contact"
                 />
               </div>
 
@@ -476,9 +543,21 @@ export function AdminPropertyForm() {
                       <option value="Waves">Waves (Pool)</option>
                       <option value="Dumbbell">Dumbbell (Gym)</option>
                       <option value="ShieldCheck">ShieldCheck (Security)</option>
-                      <option value="Coffee">Coffee (Cafe)</option>
-                      <option value="Trees">Trees (Garden)</option>
-                      <option value="Sparkles">Sparkles (Luxury)</option>
+                      <option value="Coffee">Coffee (Cafe / Lounge)</option>
+                      <option value="Trees">Trees (Garden / Greenery)</option>
+                      <option value="Sparkles">Sparkles (Luxury Feature)</option>
+                      <option value="Activity">Activity (Tennis / Sports Court)</option>
+                      <option value="Flame">Flame (BBQ Area / Fire Pit)</option>
+                      <option value="Presentation">Presentation (Conference Room)</option>
+                      <option value="Droplet">Droplet (Borehole / Water Supply)</option>
+                      <option value="Zap">Zap (Backup Generator / Power)</option>
+                      <option value="Baby">Baby (Children Play Area)</option>
+                      <option value="Utensils">Utensils (Restaurant / Dining)</option>
+                      <option value="Thermometer">Thermometer (Sauna / Steam Room)</option>
+                      <option value="Bath">Bath (Sauna / Spa)</option>
+                      <option value="Car">Car (Parking / Garages)</option>
+                      <option value="Gamepad2">Gamepad2 (Gaming Lounge)</option>
+                      <option value="ConciergeBell">ConciergeBell (Arrival Concierge)</option>
                     </select>
                   </div>
                   
@@ -497,13 +576,14 @@ export function AdminPropertyForm() {
         </div>
       </div>
 
-      {/* Location Features Bullet points */}
+      {/* Location Highlights Bullet points */}
       <div className="border-t border-primary/10 pt-8">
         <label className="block text-[10px] uppercase tracking-widest font-bold text-primary mb-2">Location Highlights (One highlight per line)</label>
         <textarea 
           name="locationFeatures"
           required
           rows={3}
+          defaultValue={property?.locationFeatures.join('\n')}
           className="w-full bg-[#131313] border border-primary/30 p-3 focus:border-primary outline-none transition-colors resize-y text-sm"
           placeholder="Near high-end shopping malls&#10;5 minutes from embassies&#10;Controlled diplomatic residential zone"
         />
@@ -519,10 +599,10 @@ export function AdminPropertyForm() {
           {isPending ? (
             <>
               <Loader2 className="animate-spin" size={16} />
-              PUBLISHING...
+              {property ? 'UPDATING...' : 'PUBLISHING...'}
             </>
           ) : (
-            'PUBLISH PROPERTY'
+            property ? 'UPDATE PROPERTY' : 'PUBLISH PROPERTY'
           )}
         </button>
       </div>

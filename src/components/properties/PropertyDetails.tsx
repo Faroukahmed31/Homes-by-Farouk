@@ -1,7 +1,30 @@
+'use client';
+
 import React from 'react';
 import { Property } from '@/types/property';
 import { Badge } from '@/components/ui/badge';
-import { Waves, Dumbbell, Coffee, ShieldCheck, MapPin } from 'lucide-react';
+import { useCurrency } from '@/context/CurrencyContext';
+import { 
+  Waves, 
+  Dumbbell, 
+  Coffee, 
+  ShieldCheck, 
+  MapPin,
+  Flame,
+  Presentation,
+  Droplet,
+  Zap,
+  Trees,
+  Sparkles,
+  Activity,
+  Baby,
+  Utensils,
+  Thermometer,
+  Bath,
+  Car,
+  Gamepad2,
+  ConciergeBell
+} from 'lucide-react';
 
 interface PropertyDetailsProps {
   property: Property;
@@ -12,9 +35,24 @@ const iconMap: Record<string, any> = {
   Dumbbell,
   Coffee,
   ShieldCheck,
+  Flame,
+  Presentation,
+  Droplet,
+  Zap,
+  Trees,
+  Sparkles,
+  Activity,
+  Baby,
+  Utensils,
+  Thermometer,
+  Bath,
+  Car,
+  Gamepad2,
+  ConciergeBell
 };
 
 export function PropertyDetails({ property }: PropertyDetailsProps) {
+  const { formatPrice } = useCurrency();
   return (
     <div className="flex flex-col gap-20">
       {/* Description */}
@@ -50,15 +88,19 @@ export function PropertyDetails({ property }: PropertyDetailsProps) {
           Available Units
         </h2>
         <div className="border border-primary/20 bg-primary/5 backdrop-blur-sm overflow-hidden">
-          <div className="grid grid-cols-3 bg-primary/10 px-6 py-4 text-[10px] uppercase tracking-[0.2em] font-bold text-primary">
+          <div className="grid grid-cols-4 bg-primary/10 px-6 py-4 text-[10px] uppercase tracking-[0.2em] font-bold text-primary">
             <div>Unit Type</div>
             <div>Size (SqM)</div>
+            <div>Price</div>
             <div className="text-right">Status</div>
           </div>
           {property.units.map((unit, i) => (
-            <div key={i} className="grid grid-cols-3 px-6 py-5 border-t border-primary/10 font-sans text-sm hover:bg-primary/5 transition-colors group">
+            <div key={i} className="grid grid-cols-4 px-6 py-5 border-t border-primary/10 font-sans text-sm hover:bg-primary/5 transition-colors group items-center">
               <div className="text-foreground group-hover:text-primary transition-colors">{unit.type}</div>
               <div className="text-foreground/60">{unit.size}</div>
+              <div className="text-foreground/80 font-mono text-xs">
+                {unit.price ? formatPrice(unit.price) : 'Contact for Price'}
+              </div>
               <div className="text-right">
                 <Badge variant="outline" className={`${
                   unit.status === 'Available' ? 'border-primary text-primary' : 'border-foreground/20 text-foreground/40'

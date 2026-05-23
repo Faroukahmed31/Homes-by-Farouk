@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Property } from '@/types/property';
 import { Button } from '@/components/ui/button';
+import { useCurrency } from '@/context/CurrencyContext';
 
 interface PropertyHeroSlideshowProps {
   property: Property;
@@ -13,6 +14,7 @@ interface PropertyHeroSlideshowProps {
 export function PropertyHeroSlideshow({ property }: PropertyHeroSlideshowProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const images = [property.heroImage, ...property.galleryImages];
+  const { currency, setCurrency, formatPrice } = useCurrency();
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
@@ -35,7 +37,7 @@ export function PropertyHeroSlideshow({ property }: PropertyHeroSlideshowProps) 
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1.05 }}
             transition={{ duration: 1.2, ease: [0.19, 1, 0.22, 1] }}
-            className="w-full h-full object-cover grayscale brightness-50"
+            className="w-full h-full object-cover brightness-50"
           />
         </AnimatePresence>
       </div>
@@ -63,12 +65,26 @@ export function PropertyHeroSlideshow({ property }: PropertyHeroSlideshowProps) 
           >
             <div className="flex items-center gap-3">
               <MapPin className="size-6 text-primary" />
-              <span className="tracking-wide">{property.location}</span>
+              <span className="tracking-wide text-white">{property.location}</span>
             </div>
             
             <div className="flex items-center gap-3 border-l border-white/20 pl-8">
-              <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-primary">Starting From</span>
-              <span className="text-2xl font-bold font-heading">KES {property.startingPrice.toLocaleString()}</span>
+              <div className="flex flex-col">
+                <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-white mb-1">Starting From</span>
+                <span className="text-2xl font-bold font-heading">{formatPrice(property.startingPrice)}</span>
+              </div>
+              <select
+                value={currency}
+                onChange={(e) => setCurrency(e.target.value as any)}
+                className="ml-4 bg-black/65 border border-primary/50 text-primary rounded-none py-2 px-3.5 font-sans text-xs tracking-widest uppercase font-bold focus:ring-1 focus:ring-primary focus:border-primary cursor-pointer hover:bg-black/85 transition-all select-none"
+              >
+                <option className="bg-[#12141a]" value="KES">KES</option>
+                <option className="bg-[#12141a]" value="USD">USD ($)</option>
+                <option className="bg-[#12141a]" value="GBP">GBP (£)</option>
+                <option className="bg-[#12141a]" value="EUR">EUR (€)</option>
+                <option className="bg-[#12141a]" value="AUD">AUD (A$)</option>
+                <option className="bg-[#12141a]" value="CNY">CNY (¥)</option>
+              </select>
             </div>
           </motion.div>
         </div>

@@ -3,7 +3,7 @@ import { getPropertiesFromNeon } from '@/lib/properties';
 import { Navbar } from '@/components/layout/Navbar';
 import { AdminNav } from '@/components/admin/AdminNav';
 import { DeletePropertyButton } from '@/components/admin/DeletePropertyButton';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Pencil } from 'lucide-react';
 import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
@@ -85,6 +85,14 @@ export default async function AdminPropertiesPage() {
                       </td>
                       <td className="p-6 text-right">
                         <div className="flex justify-end items-center gap-3">
+                          <Link 
+                            href={`/admin/properties/edit/${property.slug}`}
+                            className="p-2 text-muted-foreground hover:text-white transition-colors"
+                            title="Edit Property"
+                          >
+                            <Pencil size={16} />
+                          </Link>
+
                           <Link 
                             href={`/properties/${property.slug}`}
                             target="_blank"

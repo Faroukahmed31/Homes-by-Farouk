@@ -3,7 +3,7 @@ export const aboutData = {
     title: "Modern Expertise.",
     subtitle: "Future-Proof Investments.",
     established: "NAIROBI, KENYA",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCZHtFGsynbndLombNmMI9dCaAPRA_fNDHwjhYaRKVw0VjuCiFUWdhv9GgZMQLbt5lrGtUjvpUiAkIiDy1uw2n-NqK_xuV3qQIg_QiyJ52pdhttRaBgDOSd0F_tY9NS-XwDj3UVcWtvnD7xaABfWXUmNOMoP3B7vPnCDAoDR48rDy6WgTRKASKOKXL_5QV8BfF1bLnqovis4DCZmtpwcGZCTWGgbI5aRra354qeZns6_l4xz-NcwERHDBCqK-G7TO1vAzBi_q1zrI4",
+    image: "/images/about-hero-interior.png",
   },
   narrative: {
     quote: "We don't just find properties; we secure your financial future through surgical precision in real estate selection.",

@@ -4,6 +4,7 @@ export interface UnitType {
   type: string;
   size: number;
   status: 'Available' | 'Reserved' | 'Sold';
+  price?: string;
 }
 
 export interface Amenity {

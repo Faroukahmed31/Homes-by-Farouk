@@ -22,10 +22,10 @@ export function PropertyHero({ property }: PropertyHeroProps) {
         <div className="flex flex-wrap items-center gap-6 text-foreground/80 font-sans text-lg">
           <div className="flex items-center gap-2">
             <MapPin className="size-5 text-primary" />
-            <span>{property.location}</span>
+            <span className="text-white">{property.location}</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-[10px] uppercase tracking-widest font-bold text-primary/60">Starting From</span>
+            <span className="text-[10px] uppercase tracking-widest font-bold text-white">Starting From</span>
             <span className="text-primary font-bold">KES {property.startingPrice.toLocaleString()}</span>
           </div>
         </div>

@@ -36,13 +36,14 @@ export function PropertyCard({ property }: PropertyCardProps) {
       {/* Content Overlay */}
       <div className="absolute bottom-0 w-full glass-panel p-6 gold-border-bottom border-t border-white/10 translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
         <h3 className="text-2xl font-heading text-white mb-2">{property.title}</h3>
-        <p className="text-sm text-muted-foreground mb-4">{property.location}</p>
+        <p className="text-sm text-white mb-4">{property.location}</p>
         <div className="flex justify-between items-center">
           <div>
-            <p className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground mb-1">Starting From</p>
-            <p className="text-lg text-primary font-bold">
-              KES {property.startingPrice.toLocaleString()}
-            </p>
+            <p className="text-[10px] uppercase tracking-widest font-bold text-white mb-1">Starting From</p>
+            <div className="flex items-baseline gap-2 font-bold">
+              <span className="text-lg text-primary">KES {property.startingPrice.toLocaleString()}</span>
+              <span className="text-xs text-white font-sans">USD {Math.round(property.startingPrice / 129.57).toLocaleString()}</span>
+            </div>
           </div>
           
           <div className="text-primary hover:text-white transition-colors flex items-center gap-2 group/btn cursor-pointer">
