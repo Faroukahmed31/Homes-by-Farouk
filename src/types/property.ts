@@ -1,10 +1,14 @@
 export type PropertyStatus = 'Ready' | 'Off-Plan' | 'Rental';
 
+export type PropertyType = 'APARTMENT' | 'VILLA';
+export type PropertyFilterType = 'ALL' | PropertyType;
+
 export interface UnitType {
   type: string;
   size: number;
   status: 'Available' | 'Reserved' | 'Sold';
   price?: string;
+  rentPrice?: string;
 }
 
 export interface Amenity {
@@ -24,8 +28,12 @@ export interface Property {
   squareMeters: string;
   completionDate: string;
   status: PropertyStatus;
-  purpose: 'buy' | 'rent';
-  startingPrice: number;
+  purpose?: 'buy' | 'rent';
+  startingPrice?: number;
+  propertyType: PropertyType;
+  listingType: 'SALE' | 'RENT' | 'BOTH';
+  salePrice?: number | null;
+  rentPrice?: number | null;
   heroImage: string;
   galleryImages: string[];
   units: UnitType[];

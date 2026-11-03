@@ -11,16 +11,18 @@ vi.mock('@/lib/leads', () => ({
 
 vi.mock('resend', () => {
   return {
-    Resend: vi.fn().mockImplementation(() => ({
-      emails: {
+    Resend: vi.fn().mockImplementation(function (this: any) {
+      this.emails = {
         send: vi.fn().mockResolvedValue({ id: 'mock-id' }),
-      },
-    })),
+      };
+      return this;
+    }),
   };
 });
 
 describe('submitInquiry Action', () => {
   beforeEach(() => {
+    process.env.RESEND_API_KEY = 'mock_resend_key';
     vi.clearAllMocks();
   });
 
@@ -51,11 +53,10 @@ describe('submitInquiry Action', () => {
   });
 
   it('handles missing Resend API key gracefully', async () => {
-    // We would need to mock process.env.RESEND_API_KEY being undefined 
-    // but the logic in the action checks for it at the top level.
-    // For the test, we'll assume it's set or not based on how we mock it.
+    delete process.env.RESEND_API_KEY;
     
     const result = await submitInquiry(validData);
     expect(result.success).toBe(true);
+    expect(result.message).toContain('skipped');
   });
 });

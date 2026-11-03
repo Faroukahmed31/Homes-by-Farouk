@@ -1,0 +1,55 @@
+// Prisma schema file for Homes by Farouk Luxury Real Estate Platform
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+enum PropertyType {
+  APARTMENT
+  VILLA
+}
+
+enum ListingType {
+  SALE
+  RENT
+  BOTH
+}
+
+model Property {
+  slug             String       @id
+  title            String
+  location         String
+  description      String
+  longDescription  String[]     @map("long_description")
+  bedrooms         String
+  bathrooms        String
+  squareMeters     String       @map("square_meters")
+  completionDate   String       @map("completion_date")
+  status           String
+  purpose          String
+  startingPrice    BigInt       @map("starting_price")
+  propertyType     PropertyType @default(APARTMENT) @map("property_type")
+  listingType      ListingType  @default(SALE) @map("listing_type")
+  salePrice        BigInt?      @map("sale_price")
+  rentPrice        BigInt?      @map("rent_price")
+  heroImage        String       @map("hero_image")
+  galleryImages    String[]     @default([]) @map("gallery_images")
+  units            Json         @default("[]")
+  amenities        Json         @default("[]")
+  locationFeatures String[]     @default([]) @map("location_features")
+  mapImage         String?      @default("") @map("map_image")
+  mapLink          String?      @default("") @map("map_link")
+  mapEmbedUrl      String?      @default("") @map("map_embed_url")
+
+  createdAt        DateTime     @default(now()) @map("created_at")
+  updatedAt        DateTime     @updatedAt @map("updated_at")
+
+  @@map("properties")
+}

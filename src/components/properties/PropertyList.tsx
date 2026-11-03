@@ -2,8 +2,10 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 import { PropertyCard } from '@/components/properties/PropertyCard';
-import { Property } from '@/types/property';
+import { PropertyTypeToggle } from '@/components/properties/PropertyTypeToggle';
+import { Property, PropertyFilterType } from '@/types/property';
 import { Search } from 'lucide-react';
 
 interface PropertyListProps {
@@ -18,7 +20,8 @@ export function PropertyList({ initialProperties }: PropertyListProps) {
     status: 'All',
     search: '',
     location: 'any',
-    purpose: 'buy'
+    purpose: 'buy',
+    propertyType: 'ALL' as PropertyFilterType,
   });
 
   // Sync state if initialProperties changes on the server
@@ -33,12 +36,21 @@ export function PropertyList({ initialProperties }: PropertyListProps) {
     const statusParam = searchParams.get('status');
     const locationParam = searchParams.get('location');
     const purposeParam = searchParams.get('purpose');
+    const typeParam = searchParams.get('type') || searchParams.get('propertyType');
     
+    let parsedType: PropertyFilterType = 'ALL';
+    if (typeParam) {
+      const lower = typeParam.toLowerCase();
+      if (lower.startsWith('apartment')) parsedType = 'APARTMENT';
+      else if (lower.startsWith('villa')) parsedType = 'VILLA';
+    }
+
     setFilter(prev => ({
       ...prev,
       status: statusParam === 'ready' ? 'Ready' : statusParam === 'off-plan' ? 'Off-Plan' : 'All',
       location: locationParam || 'any',
-      purpose: (purposeParam as 'buy' | 'rent') || 'buy'
+      purpose: (purposeParam as 'buy' | 'rent') || 'buy',
+      propertyType: parsedType,
     }));
   }, [searchParams]);
 
@@ -49,8 +61,32 @@ export function PropertyList({ initialProperties }: PropertyListProps) {
     }
   }, [filter.purpose]);
 
+  // Dynamic counts for each property type based on search/status/location
+  const typeCounts = useMemo(() => {
+    const baseMatches = propertiesList.filter(p => {
+      const matchStatus = filter.status === 'All' || p.status === filter.status;
+      const matchSearch = p.title.toLowerCase().includes(filter.search.toLowerCase()) || 
+                          p.location.toLowerCase().includes(filter.search.toLowerCase());
+      const matchLocation = filter.location === 'any' || 
+                            p.location.toLowerCase().includes(filter.location.toLowerCase());
+      const matchPurpose = filter.purpose === 'buy'
+        ? (p.listingType === 'SALE' || p.listingType === 'BOTH')
+        : (p.listingType === 'RENT' || p.listingType === 'BOTH');
+      return matchStatus && matchSearch && matchLocation && matchPurpose;
+    });
+
+    return {
+      ALL: baseMatches.length,
+      APARTMENT: baseMatches.filter(p => p.propertyType === 'APARTMENT').length,
+      VILLA: baseMatches.filter(p => p.propertyType === 'VILLA').length,
+    };
+  }, [filter.search, filter.location, filter.purpose, filter.status, propertiesList]);
+
   const filteredProperties = useMemo(() => {
     return propertiesList.filter(p => {
+      // Property Type Match
+      const matchType = filter.propertyType === 'ALL' || p.propertyType === filter.propertyType;
+
       // Status Match
       const matchStatus = filter.status === 'All' || p.status === filter.status;
       
@@ -63,16 +99,18 @@ export function PropertyList({ initialProperties }: PropertyListProps) {
                             p.location.toLowerCase().includes(filter.location.toLowerCase());
 
       // Purpose Match
-      const matchPurpose = p.purpose === filter.purpose;
+      const matchPurpose = filter.purpose === 'buy'
+        ? (p.listingType === 'SALE' || p.listingType === 'BOTH')
+        : (p.listingType === 'RENT' || p.listingType === 'BOTH');
       
-      return matchStatus && matchSearch && matchLocation && matchPurpose;
+      return matchType && matchStatus && matchSearch && matchLocation && matchPurpose;
     });
   }, [filter, propertiesList]);
 
   return (
     <div className="w-full">
       {/* Filters Bar */}
-      <div className="flex flex-col lg:flex-row gap-6 mb-12 glass-panel p-6 gold-border">
+      <div className="flex flex-col lg:flex-row gap-6 mb-8 glass-panel p-6 gold-border">
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
           <input 
@@ -117,19 +155,34 @@ export function PropertyList({ initialProperties }: PropertyListProps) {
         </div>
       </div>
 
-      {/* Results */}
+      {/* Pill Toggle Switch: Apartments vs Villas (Above Property Grid) */}
+      <div className="mb-8">
+        <PropertyTypeToggle
+          value={filter.propertyType}
+          onChange={(newType) => setFilter(prev => ({ ...prev, propertyType: newType }))}
+          counts={typeCounts}
+          showAllOption={true}
+        />
+      </div>
+
+      {/* Results Grid with Smooth Transitions */}
       {filteredProperties.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 transition-all duration-300">
           {filteredProperties.map((property) => (
-            <PropertyCard key={property.slug} property={property} />
+            <div key={property.slug} className="transition-opacity duration-300">
+              <PropertyCard property={property} />
+            </div>
           ))}
         </div>
       ) : (
         <div className="text-center py-20 glass-panel gold-border">
           <h3 className="text-xl text-primary font-heading mb-2">No matching properties found</h3>
-          <p className="text-muted-foreground text-sm font-sans">Try adjusting your filters or search terms.</p>
+          <p className="text-muted-foreground text-sm font-sans">
+            Try switching property types or adjusting your search filters.
+          </p>
         </div>
       )}
     </div>
   );
 }
+

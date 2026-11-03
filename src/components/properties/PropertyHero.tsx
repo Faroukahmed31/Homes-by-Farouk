@@ -26,7 +26,7 @@ export function PropertyHero({ property }: PropertyHeroProps) {
           </div>
           <div className="flex items-center gap-2">
             <span className="text-[10px] uppercase tracking-widest font-bold text-white">Starting From</span>
-            <span className="text-primary font-bold">KES {property.startingPrice.toLocaleString()}</span>
+            <span className="text-primary font-bold">KES {(property.startingPrice || 0).toLocaleString()}</span>
           </div>
         </div>
       </div>

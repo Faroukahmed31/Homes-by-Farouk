@@ -94,9 +94,23 @@ export async function addPropertyAction(formData: FormData) {
   const bathrooms = formData.get('bathrooms') as string;
   const squareMeters = formData.get('squareMeters') as string;
   const completionDate = formData.get('completionDate') as string;
-  const status = formData.get('status') as string;
-  const purpose = formData.get('purpose') as string;
-  const startingPrice = Number(formData.get('startingPrice'));
+  const statusVal = formData.get('status') as string;
+  let status = statusVal;
+  const listingType = (formData.get('listingType') as string) || 'SALE';
+  const propertyType = (formData.get('propertyType') as string) || 'APARTMENT';
+
+  // Safeguard: If listing type is BOTH (Sale & Rent), automatically force status to Ready
+  if (listingType === 'BOTH') {
+    status = 'Ready';
+  }
+
+  const salePrice = formData.get('salePrice') ? Number(formData.get('salePrice')) : null;
+  const rentPrice = formData.get('rentPrice') ? Number(formData.get('rentPrice')) : null;
+
+  // Compute fallbacks for compatibility
+  const purpose = listingType === 'RENT' ? 'rent' : 'buy';
+  const startingPrice = (listingType === 'RENT' ? rentPrice : salePrice) || 0;
+
   // Handle Hero Image upload or URL
   const heroImageFile = formData.get('heroImageFile');
   let heroImage = '';
@@ -170,7 +184,8 @@ export async function addPropertyAction(formData: FormData) {
         slug, title, location, description, long_description, 
         bedrooms, bathrooms, square_meters, completion_date, 
         status, purpose, starting_price, hero_image, gallery_images, 
-        units, amenities, location_features, map_image, map_link, map_embed_url
+        units, amenities, location_features, map_image, map_link, map_embed_url,
+        listing_type, property_type, sale_price, rent_price
       ) VALUES (
         ${slug}, ${title}, ${location}, ${description}, 
         ${longDescription}, ${bedrooms}, ${bathrooms}, 
@@ -178,7 +193,8 @@ export async function addPropertyAction(formData: FormData) {
         ${purpose}, ${startingPrice}, ${heroImage}, 
         ${galleryImages}, ${JSON.stringify(units)}, 
         ${JSON.stringify(amenities)}, ${locationFeatures}, 
-        ${mapImage}, ${mapLink}, ${mapEmbedUrl}
+        ${mapImage}, ${mapLink}, ${mapEmbedUrl},
+        ${listingType}, ${propertyType}, ${salePrice}, ${rentPrice}
       ) ON CONFLICT (slug) DO UPDATE SET
         title = EXCLUDED.title,
         location = EXCLUDED.location,
@@ -198,7 +214,11 @@ export async function addPropertyAction(formData: FormData) {
         location_features = EXCLUDED.location_features,
         map_image = EXCLUDED.map_image,
         map_link = EXCLUDED.map_link,
-        map_embed_url = EXCLUDED.map_embed_url;
+        map_embed_url = EXCLUDED.map_embed_url,
+        listing_type = EXCLUDED.listing_type,
+        property_type = EXCLUDED.property_type,
+        sale_price = EXCLUDED.sale_price,
+        rent_price = EXCLUDED.rent_price;
     `;
 
     // Revalidate paths so the new property shows up instantly

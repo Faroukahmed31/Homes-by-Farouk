@@ -11,6 +11,40 @@ interface PropertyCardProps {
 
 export function PropertyCard({ property }: PropertyCardProps) {
   const isOffPlan = property.status.includes('Off-Plan');
+
+  // Format price helper
+  const formatCompactPrice = (priceKES: number) => {
+    // For KES (Ksh)
+    let primary = '';
+    if (priceKES >= 1000000) {
+      const m = priceKES / 1000000;
+      primary = `Ksh ${m % 1 === 0 ? m : m.toFixed(1)}M`;
+    } else {
+      primary = `Ksh ${priceKES.toLocaleString()}`;
+    }
+
+    // For USD
+    const usdVal = Math.round(priceKES / 129.57);
+    let secondary = '';
+    if (usdVal >= 1000000) {
+      const m = usdVal / 1000000;
+      secondary = `USD ${m % 1 === 0 ? m : m.toFixed(1)}M`;
+    } else if (usdVal >= 1000) {
+      const k = usdVal / 1000;
+      secondary = `USD ${k % 1 === 0 ? k : k.toFixed(1)}K`;
+    } else {
+      secondary = `USD ${usdVal.toLocaleString()}`;
+    }
+
+    return { primary, secondary };
+  };
+
+  const formatRentPrice = (priceKES: number) => {
+    const primary = `Ksh ${priceKES.toLocaleString()} / month`;
+    const usdVal = Math.round(priceKES / 129.57);
+    const secondary = `USD ${usdVal.toLocaleString()} / month`;
+    return { primary, secondary };
+  };
   
   return (
     <Link 
@@ -24,7 +58,26 @@ export function PropertyCard({ property }: PropertyCardProps) {
         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
       />
       
-      {/* Badge */}
+      {/* Listing & Property Type Badges */}
+      <div className="absolute top-6 left-6 flex flex-wrap gap-2 z-10">
+        {property.propertyType && (
+          <div className="backdrop-blur-md text-[10px] uppercase tracking-widest font-bold px-3 py-1.5 border bg-[#0A1015]/85 text-white/90 border-white/20">
+            {property.propertyType === 'APARTMENT' ? 'Apartment' : 'Villa'}
+          </div>
+        )}
+        {(property.listingType === 'SALE' || property.listingType === 'BOTH') && (
+          <div className="backdrop-blur-md text-[10px] uppercase tracking-widest font-bold px-3 py-1.5 border bg-primary/80 text-primary-foreground border-primary">
+            For Sale
+          </div>
+        )}
+        {(property.listingType === 'RENT' || property.listingType === 'BOTH') && (
+          <div className="backdrop-blur-md text-[10px] uppercase tracking-widest font-bold px-3 py-1.5 border bg-[#0A1015]/85 text-white border-white/20">
+            For Rent
+          </div>
+        )}
+      </div>
+
+      {/* Status Badge */}
       <div className={`absolute top-6 right-6 backdrop-blur-md text-xs font-bold px-4 py-2 border ${
         isOffPlan 
           ? 'bg-primary/80 text-primary-foreground border-primary' 
@@ -39,11 +92,33 @@ export function PropertyCard({ property }: PropertyCardProps) {
         <p className="text-sm text-white mb-4">{property.location}</p>
         <div className="flex justify-between items-center">
           <div>
-            <p className="text-[10px] uppercase tracking-widest font-bold text-white mb-1">Starting From</p>
-            <div className="flex items-baseline gap-2 font-bold">
-              <span className="text-lg text-primary">KES {property.startingPrice.toLocaleString()}</span>
-              <span className="text-xs text-white font-sans">USD {Math.round(property.startingPrice / 129.57).toLocaleString()}</span>
-            </div>
+            <p className={`text-[10px] uppercase tracking-widest font-bold mb-1 ${
+              property.listingType === 'BOTH' ? 'text-white' : 'text-white/60'
+            }`}>
+              {property.listingType === 'BOTH' ? 'Buy & Rent' : property.listingType === 'RENT' ? 'Rent Price' : 'Sale Price'}
+            </p>
+            {property.listingType === 'BOTH' ? (
+              <div className="flex flex-col gap-0.5">
+                <div className="flex items-baseline gap-2 font-bold">
+                  <span className="text-lg text-primary">{formatCompactPrice(property.salePrice || 0).primary}</span>
+                  <span className="text-xs text-white font-sans">{formatCompactPrice(property.salePrice || 0).secondary}</span>
+                </div>
+                <div className="flex items-baseline gap-2 font-medium">
+                  <span className="text-xs text-white">{formatRentPrice(property.rentPrice || 0).primary}</span>
+                  <span className="text-[10px] text-white/70 font-sans">{formatRentPrice(property.rentPrice || 0).secondary}</span>
+                </div>
+              </div>
+            ) : property.listingType === 'RENT' ? (
+              <div className="flex items-baseline gap-2 font-bold">
+                <span className="text-lg text-primary">{formatRentPrice(property.rentPrice || 0).primary}</span>
+                <span className="text-xs text-white font-sans">{formatRentPrice(property.rentPrice || 0).secondary}</span>
+              </div>
+            ) : (
+              <div className="flex items-baseline gap-2 font-bold">
+                <span className="text-lg text-primary">{formatCompactPrice(property.salePrice || 0).primary}</span>
+                <span className="text-xs text-white font-sans">{formatCompactPrice(property.salePrice || 0).secondary}</span>
+              </div>
+            )}
           </div>
           
           <div className="text-primary hover:text-white transition-colors flex items-center gap-2 group/btn cursor-pointer">

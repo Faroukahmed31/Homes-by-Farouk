@@ -17,9 +17,9 @@ vi.mock("framer-motion", () => ({
 describe("AboutPage", () => {
   it("renders the hero section with correct title", () => {
     render(<AboutPage />);
-    expect(screen.getByText(/Modern Expertise/i)).toBeInTheDocument();
-    expect(screen.getByText(/Future-Proof/i)).toBeInTheDocument();
-    expect(screen.getByText(/NAIROBI, KENYA/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Modern Expertise/i)[0]).toBeInTheDocument();
+    expect(screen.getAllByText(/Future-Proof/i)[0]).toBeInTheDocument();
+    expect(screen.getAllByText(/NAIROBI, KENYA/i)[0]).toBeInTheDocument();
   });
 
   it("renders the narrative section with the mission quote", () => {
@@ -39,6 +39,6 @@ describe("AboutPage", () => {
   it("renders the CTA section", () => {
     render(<AboutPage />);
     expect(screen.getByText(/Ready to elevate your investment strategy/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Let’s Discuss Your Portfolio/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Let’s Discuss Your Portfolio/i })).toBeInTheDocument();
   });
 });

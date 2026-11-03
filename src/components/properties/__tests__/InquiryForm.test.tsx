@@ -8,6 +8,15 @@ vi.mock('@/app/actions/leads', () => ({
   captureLead: vi.fn(() => Promise.resolve({ success: true })),
 }));
 
+// Mock the currency context to avoid Provider wrapper requirements in simple unit tests
+vi.mock('@/context/CurrencyContext', () => ({
+  useCurrency: () => ({
+    formatPrice: (val: number) => `KES ${val.toLocaleString()}`,
+    currency: 'KES',
+    setCurrency: () => {},
+  }),
+}));
+
 // Mock the property data
 const mockProperty: Property = {
   slug: 'test-property',
@@ -22,6 +31,10 @@ const mockProperty: Property = {
   status: 'Ready',
   purpose: 'buy',
   startingPrice: 35000000,
+  propertyType: 'APARTMENT',
+  listingType: 'SALE',
+  salePrice: 35000000,
+  rentPrice: null,
   heroImage: '',
   galleryImages: [],
   units: [],

@@ -112,7 +112,7 @@ export function InquiryForm({ property }: InquiryFormProps) {
           <span>Register your interest to receive the full brochure and floor plans.</span>
           <div className="flex justify-between items-center bg-white/5 border border-white/10 p-3 mt-1">
             <span className="text-white font-bold text-[11px] uppercase tracking-wider">
-              Starting From <span className="text-primary">{formatPrice(property.startingPrice)}</span>
+              Starting From <span className="text-primary">{formatPrice(property.startingPrice || 0)}</span>
             </span>
             <div className="flex items-center gap-2">
               <span className="text-[9px] uppercase tracking-wider text-white/50 font-bold">Currency:</span>

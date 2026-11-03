@@ -23,7 +23,10 @@ import {
   Bath,
   Car,
   Gamepad2,
-  ConciergeBell
+  ConciergeBell,
+  Clapperboard,
+  Film,
+  Projector
 } from 'lucide-react';
 
 interface PropertyDetailsProps {
@@ -48,7 +51,12 @@ const iconMap: Record<string, any> = {
   Bath,
   Car,
   Gamepad2,
-  ConciergeBell
+  ConciergeBell,
+  Clapperboard,
+  Film,
+  Projector,
+  SkyCinema: Clapperboard,
+  Cinema: Film,
 };
 
 export function PropertyDetails({ property }: PropertyDetailsProps) {
@@ -99,7 +107,21 @@ export function PropertyDetails({ property }: PropertyDetailsProps) {
               <div className="text-foreground group-hover:text-primary transition-colors">{unit.type}</div>
               <div className="text-foreground/60">{unit.size}</div>
               <div className="text-foreground/80 font-mono text-xs">
-                {unit.price ? formatPrice(unit.price) : 'Contact for Price'}
+                {property.listingType === 'BOTH' ? (
+                  <div className="flex flex-col gap-0.5">
+                    {unit.price && <div>Sale: {formatPrice(unit.price)}</div>}
+                    {unit.rentPrice && <div className="text-foreground/60 text-[10px]">Rent: {formatPrice(unit.rentPrice)}/mo</div>}
+                    {!unit.price && !unit.rentPrice && 'Contact for Price'}
+                  </div>
+                ) : property.listingType === 'RENT' ? (
+                  <div>
+                    {unit.rentPrice ? `${formatPrice(unit.rentPrice)} / month` : unit.price ? `${formatPrice(unit.price)} / month` : 'Contact for Price'}
+                  </div>
+                ) : (
+                  <div>
+                    {unit.price ? formatPrice(unit.price) : 'Contact for Price'}
+                  </div>
+                )}
               </div>
               <div className="text-right">
                 <Badge variant="outline" className={`${

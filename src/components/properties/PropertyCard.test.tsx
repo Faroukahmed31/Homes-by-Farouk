@@ -16,6 +16,10 @@ const mockProperty: Property = {
   status: 'Ready',
   purpose: 'buy',
   startingPrice: 10000000,
+  propertyType: 'VILLA',
+  listingType: 'SALE',
+  salePrice: 10000000,
+  rentPrice: null,
   heroImage: 'https://example.com/image.jpg',
   galleryImages: [],
   units: [],
@@ -33,7 +37,7 @@ describe('PropertyCard', () => {
 
   it('formats the price with KES and commas', () => {
     render(<PropertyCard property={mockProperty} />);
-    expect(screen.getByText(/KES 10,000,000/i)).toBeInTheDocument();
+    expect(screen.getByText(/Ksh 10M/i)).toBeInTheDocument();
   });
 
   it('shows the correct status badge', () => {

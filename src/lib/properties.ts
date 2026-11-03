@@ -27,7 +27,11 @@ export async function initPropertiesTable() {
         units JSONB NOT NULL DEFAULT '[]'::jsonb,
         amenities JSONB NOT NULL DEFAULT '[]'::jsonb,
         location_features TEXT[] NOT NULL DEFAULT '{}',
-        map_image TEXT DEFAULT ''
+        map_image TEXT DEFAULT '',
+        listing_type TEXT NOT NULL DEFAULT 'SALE',
+        property_type TEXT NOT NULL DEFAULT 'APARTMENT',
+        sale_price BIGINT,
+        rent_price BIGINT
       );
     `;
 
@@ -35,6 +39,17 @@ export async function initPropertiesTable() {
     await sql`ALTER TABLE properties ADD COLUMN IF NOT EXISTS map_link TEXT DEFAULT '';`;
     // Ensure map_embed_url column exists
     await sql`ALTER TABLE properties ADD COLUMN IF NOT EXISTS map_embed_url TEXT DEFAULT '';`;
+    
+    // Ensure new dynamic listing fields exist
+    await sql`ALTER TABLE properties ADD COLUMN IF NOT EXISTS listing_type TEXT NOT NULL DEFAULT 'SALE';`;
+    await sql`ALTER TABLE properties ADD COLUMN IF NOT EXISTS property_type TEXT NOT NULL DEFAULT 'APARTMENT';`;
+    await sql`ALTER TABLE properties ADD COLUMN IF NOT EXISTS sale_price BIGINT;`;
+    await sql`ALTER TABLE properties ADD COLUMN IF NOT EXISTS rent_price BIGINT;`;
+
+    // Migrate existing data based on legacy columns
+    await sql`UPDATE properties SET listing_type = 'RENT' WHERE purpose = 'rent' AND listing_type = 'SALE' AND rent_price IS NULL;`;
+    await sql`UPDATE properties SET sale_price = starting_price WHERE (listing_type = 'SALE' OR listing_type = 'BOTH') AND sale_price IS NULL;`;
+    await sql`UPDATE properties SET rent_price = starting_price WHERE (listing_type = 'RENT' OR listing_type = 'BOTH') AND rent_price IS NULL;`;
 
     // 2. Check if the table is currently empty
     const countResult = await sql`SELECT COUNT(*)::integer as count FROM properties;`;
@@ -49,15 +64,17 @@ export async function initPropertiesTable() {
             slug, title, location, description, long_description, 
             bedrooms, bathrooms, square_meters, completion_date, 
             status, purpose, starting_price, hero_image, gallery_images, 
-            units, amenities, location_features, map_image, map_link, map_embed_url
+            units, amenities, location_features, map_image, map_link, map_embed_url,
+            listing_type, property_type, sale_price, rent_price
           ) VALUES (
             ${item.slug}, ${item.title}, ${item.location}, ${item.description}, 
             ${item.longDescription}, ${item.bedrooms}, ${item.bathrooms}, 
             ${item.squareMeters}, ${item.completionDate}, ${item.status}, 
-            ${item.purpose}, ${item.startingPrice}, ${item.heroImage}, 
+            ${item.purpose || 'buy'}, ${item.startingPrice || 0}, ${item.heroImage}, 
             ${item.galleryImages}, ${JSON.stringify(item.units)}, 
             ${JSON.stringify(item.amenities)}, ${item.locationFeatures}, 
-            ${item.mapImage || ''}, '', ''
+            ${item.mapImage || ''}, '', '',
+            ${item.listingType}, ${item.propertyType || 'APARTMENT'}, ${item.salePrice}, ${item.rentPrice}
           ) ON CONFLICT (slug) DO NOTHING;
         `;
       }
@@ -70,6 +87,14 @@ export async function initPropertiesTable() {
 
 // Maps Postgres snake_case table row to TypeScript camelCase Property interface
 function mapDbRowToProperty(row: any): Property {
+  const listingType = (row.listing_type || (row.purpose === 'rent' ? 'RENT' : 'SALE')) as 'SALE' | 'RENT' | 'BOTH';
+  const salePrice = row.sale_price !== null && row.sale_price !== undefined ? Number(row.sale_price) : (row.purpose === 'buy' ? Number(row.starting_price) : null);
+  const rentPrice = row.rent_price !== null && row.rent_price !== undefined ? Number(row.rent_price) : (row.purpose === 'rent' ? Number(row.starting_price) : null);
+  
+  // Computed fallbacks for backward compatibility
+  const purpose = listingType === 'RENT' ? 'rent' : 'buy';
+  const startingPrice = (listingType === 'RENT' ? rentPrice : salePrice) || Number(row.starting_price) || 0;
+
   return {
     slug: row.slug,
     title: row.title,
@@ -81,8 +106,12 @@ function mapDbRowToProperty(row: any): Property {
     squareMeters: row.square_meters,
     completionDate: row.completion_date,
     status: row.status,
-    purpose: row.purpose,
-    startingPrice: Number(row.starting_price),
+    purpose,
+    startingPrice,
+    propertyType: (row.property_type as Property['propertyType']) || 'APARTMENT',
+    listingType,
+    salePrice,
+    rentPrice,
     heroImage: row.hero_image,
     galleryImages: row.gallery_images || [],
     units: typeof row.units === 'string' ? JSON.parse(row.units) : row.units || [],

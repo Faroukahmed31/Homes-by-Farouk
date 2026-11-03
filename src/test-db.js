@@ -25,14 +25,16 @@ async function runTest() {
         slug, title, location, description, long_description, 
         bedrooms, bathrooms, square_meters, completion_date, 
         status, purpose, starting_price, hero_image, gallery_images, 
-        units, amenities, location_features, map_image, map_link, map_embed_url
+        units, amenities, location_features, map_image, map_link, map_embed_url,
+        listing_type, sale_price, rent_price
       ) VALUES (
         ${testSlug}, 'Test Title', 'Test Location', 'Test Description', 
         ARRAY['Long Description Line 1'], '3', '3', 
         '150', '2026', 'Off-Plan', 'buy', 15000000, 'http://test.com/hero.png', 
         ARRAY['http://test.com/gallery1.png'], 
         ${JSON.stringify([])}, ${JSON.stringify([])}, 
-        ARRAY['Highlight 1'], '', '', ''
+        ARRAY['Highlight 1'], '', '', '',
+        'SALE', 15000000, null
       );
     `;
     console.log('Insert test succeeded!');

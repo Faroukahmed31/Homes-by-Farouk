@@ -4,12 +4,13 @@ import React, { useState, useEffect } from 'react';
 import { addPropertyAction } from '@/app/actions/properties';
 import { Plus, Trash2, ArrowLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
-import { Property } from '@/types/property';
+import { Property, PropertyStatus } from '@/types/property';
 
 interface UnitInput {
   type: string;
   size: string;
   price: string;
+  rentPrice?: string;
   status: 'Available' | 'Reserved' | 'Sold';
 }
 
@@ -23,6 +24,15 @@ export function AdminPropertyForm({ property }: { property?: Property }) {
   const [title, setTitle] = useState(property?.title || '');
   const [slug, setSlug] = useState(property?.slug || '');
   const [isPending, setIsPending] = useState(false);
+  const [listingType, setListingType] = useState<'SALE' | 'RENT' | 'BOTH'>(property?.listingType || 'SALE');
+  const [status, setStatus] = useState<PropertyStatus>(property?.status || 'Off-Plan');
+
+  // Auto-set status to 'Ready' if listing type is BOTH (Sale & Rent)
+  useEffect(() => {
+    if (listingType === 'BOTH') {
+      setStatus('Ready');
+    }
+  }, [listingType]);
   
   // Dynamic lists
   const [units, setUnits] = useState<UnitInput[]>(
@@ -30,9 +40,10 @@ export function AdminPropertyForm({ property }: { property?: Property }) {
       type: u.type,
       size: String(u.size),
       price: u.price || '',
+      rentPrice: u.rentPrice || '',
       status: u.status
     })) || [
-      { type: '3 Bed Duplex', size: '280', price: '35000000', status: 'Available' }
+      { type: '3 Bed Duplex', size: '280', price: '35000000', rentPrice: '', status: 'Available' }
     ]
   );
   
@@ -56,7 +67,7 @@ export function AdminPropertyForm({ property }: { property?: Property }) {
   }, [title, property]);
 
   const addUnit = () => {
-    setUnits([...units, { type: '', size: '', price: '', status: 'Available' }]);
+    setUnits([...units, { type: '', size: '', price: '', rentPrice: '', status: 'Available' }]);
   };
 
   const removeUnit = (index: number) => {
@@ -123,6 +134,7 @@ export function AdminPropertyForm({ property }: { property?: Property }) {
         type: u.type,
         size: Number(u.size) || 0,
         price: u.price || '',
+        rentPrice: u.rentPrice || '',
         status: u.status
       }));
       formData.set('units', JSON.stringify(formattedUnits));
@@ -190,36 +202,68 @@ export function AdminPropertyForm({ property }: { property?: Property }) {
         </div>
 
         <div>
-          <label className="block text-[10px] uppercase tracking-widest font-bold text-primary mb-2">Starting Price (KES)</label>
-          <input 
-            type="number" 
-            name="startingPrice"
+          <label className="block text-[10px] uppercase tracking-widest font-bold text-primary mb-2">Listing Type</label>
+          <select 
+            name="listingType"
             required
-            defaultValue={property?.startingPrice}
-            className="w-full bg-transparent border-b border-primary/30 py-2 focus:border-primary outline-none transition-colors"
-            placeholder="e.g. 35000000"
-          />
+            value={listingType}
+            onChange={(e) => setListingType(e.target.value as 'SALE' | 'RENT' | 'BOTH')}
+            className="w-full bg-[#131313] border-b border-primary/30 py-2 focus:border-primary outline-none transition-colors text-white"
+          >
+            <option value="SALE">For Sale</option>
+            <option value="RENT">For Rent</option>
+            <option value="BOTH">Both (Sale & Rent)</option>
+          </select>
         </div>
 
         <div>
-          <label className="block text-[10px] uppercase tracking-widest font-bold text-primary mb-2">Listing Purpose</label>
+          <label className="block text-[10px] uppercase tracking-widest font-bold text-primary mb-2">Property Category</label>
           <select 
-            name="purpose"
+            name="propertyType"
             required
-            defaultValue={property?.purpose}
-            className="w-full bg-[#131313] border-b border-primary/30 py-2 focus:border-primary outline-none transition-colors"
+            defaultValue={property?.propertyType || 'APARTMENT'}
+            className="w-full bg-[#131313] border-b border-primary/30 py-2 focus:border-primary outline-none transition-colors text-white"
           >
-            <option value="buy">For Sale (Buy)</option>
-            <option value="rent">For Rent</option>
+            <option value="APARTMENT">Apartment</option>
+            <option value="VILLA">Villa</option>
           </select>
         </div>
+
+        {(listingType === 'SALE' || listingType === 'BOTH') && (
+          <div>
+            <label className="block text-[10px] uppercase tracking-widest font-bold text-primary mb-2">Sale Price (KES)</label>
+            <input 
+              type="number" 
+              name="salePrice"
+              required
+              defaultValue={property?.salePrice || property?.startingPrice || ''}
+              className="w-full bg-transparent border-b border-primary/30 py-2 focus:border-primary outline-none transition-colors"
+              placeholder="e.g. 35000000"
+            />
+          </div>
+        )}
+
+        {(listingType === 'RENT' || listingType === 'BOTH') && (
+          <div>
+            <label className="block text-[10px] uppercase tracking-widest font-bold text-primary mb-2">Rent Price (KES / Month)</label>
+            <input 
+              type="number" 
+              name="rentPrice"
+              required
+              defaultValue={property?.rentPrice || (property?.listingType === 'RENT' ? property?.startingPrice : '') || ''}
+              className="w-full bg-transparent border-b border-primary/30 py-2 focus:border-primary outline-none transition-colors"
+              placeholder="e.g. 150000"
+            />
+          </div>
+        )}
 
         <div>
           <label className="block text-[10px] uppercase tracking-widest font-bold text-primary mb-2">Status Type</label>
           <select 
             name="status"
             required
-            defaultValue={property?.status}
+            value={status}
+            onChange={(e) => setStatus(e.target.value as PropertyStatus)}
             className="w-full bg-[#131313] border-b border-primary/30 py-2 focus:border-primary outline-none transition-colors"
           >
             <option value="Off-Plan">Off-Plan</option>
@@ -427,7 +471,7 @@ export function AdminPropertyForm({ property }: { property?: Property }) {
         
         <div className="space-y-4">
           {units.map((unit, index) => (
-            <div key={index} className="grid grid-cols-1 sm:grid-cols-5 gap-4 items-end bg-[#131313] p-4 border border-white/5">
+            <div key={index} className={`grid grid-cols-1 ${listingType === 'BOTH' ? 'sm:grid-cols-6' : 'sm:grid-cols-5'} gap-4 items-end bg-[#131313] p-4 border border-white/5`}>
               <div>
                 <span className="text-[9px] uppercase tracking-widest text-muted-foreground mb-1 block">Unit Type/Label</span>
                 <input 
@@ -452,16 +496,35 @@ export function AdminPropertyForm({ property }: { property?: Property }) {
                 />
               </div>
 
-              <div>
-                <span className="text-[9px] uppercase tracking-widest text-muted-foreground mb-1 block">Price (KES or Text)</span>
-                <input 
-                  type="text" 
-                  value={unit.price}
-                  onChange={(e) => updateUnit(index, 'price', e.target.value)}
-                  className="w-full bg-transparent border-b border-white/20 py-1 text-sm focus:border-primary outline-none transition-colors"
-                  placeholder="e.g. 35000000 or Contact"
-                />
-              </div>
+              {(listingType === 'SALE' || listingType === 'BOTH') && (
+                <div>
+                  <span className="text-[9px] uppercase tracking-widest text-muted-foreground mb-1 block">
+                    {listingType === 'BOTH' ? 'Sale Price (KES)' : 'Price (KES or Text)'}
+                  </span>
+                  <input 
+                    type="text" 
+                    value={unit.price}
+                    onChange={(e) => updateUnit(index, 'price', e.target.value)}
+                    className="w-full bg-transparent border-b border-white/20 py-1 text-sm focus:border-primary outline-none transition-colors"
+                    placeholder="e.g. 35000000 or Contact"
+                  />
+                </div>
+              )}
+
+              {(listingType === 'RENT' || listingType === 'BOTH') && (
+                <div>
+                  <span className="text-[9px] uppercase tracking-widest text-muted-foreground mb-1 block">
+                    {listingType === 'BOTH' ? 'Rent Price (KES)' : 'Rent (KES or Text)'}
+                  </span>
+                  <input 
+                    type="text" 
+                    value={unit.rentPrice || ''}
+                    onChange={(e) => updateUnit(index, 'rentPrice', e.target.value)}
+                    className="w-full bg-transparent border-b border-white/20 py-1 text-sm focus:border-primary outline-none transition-colors"
+                    placeholder="e.g. 150000 or Contact"
+                  />
+                </div>
+              )}
 
               <div>
                 <span className="text-[9px] uppercase tracking-widest text-muted-foreground mb-1 block">Status</span>
@@ -540,6 +603,9 @@ export function AdminPropertyForm({ property }: { property?: Property }) {
                       onChange={(e) => updateAmenity(index, 'iconName', e.target.value)}
                       className="w-full bg-[#1c1b1b] border-b border-white/20 py-1 text-sm focus:border-primary outline-none transition-colors"
                     >
+                      <option value="Clapperboard">Sky Cinema (Clapperboard)</option>
+                      <option value="Film">Film (Cinema / Private Screening)</option>
+                      <option value="Projector">Projector (Sky Cinema / Screening Room)</option>
                       <option value="Waves">Waves (Pool)</option>
                       <option value="Dumbbell">Dumbbell (Gym)</option>
                       <option value="ShieldCheck">ShieldCheck (Security)</option>

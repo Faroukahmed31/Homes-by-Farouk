@@ -3,7 +3,7 @@
 import { Resend } from 'resend';
 import { saveLead } from '@/lib/leads';
 
-const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+const getResend = () => (process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null);
 
 export async function submitInquiry(formData: {
   name: string;
@@ -28,6 +28,7 @@ export async function submitInquiry(formData: {
   // Simulate network delay for UX
   await new Promise((resolve) => setTimeout(resolve, 1500));
 
+  const resend = getResend();
   if (!resend) {
     console.warn('RESEND_API_KEY is missing. Email notification skipped.');
     return { success: true, message: 'Inquiry captured (email skipped)' };

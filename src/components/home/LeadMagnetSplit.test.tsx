@@ -38,11 +38,11 @@ describe('LeadMagnetSplit', () => {
     const foreignForm = forms[1];
     
     const nameInput = foreignForm.querySelector('input[placeholder*="Full Name"]') as HTMLInputElement;
-    const phoneInput = foreignForm.querySelector('input[placeholder*="Phone Number"]') as HTMLInputElement;
+    const emailInput = foreignForm.querySelector('input[placeholder*="Email Address"]') as HTMLInputElement;
     const submitButton = foreignForm.querySelector('button') as HTMLButtonElement;
     
     fireEvent.change(nameInput, { target: { value: 'Jane Doe' } });
-    fireEvent.change(phoneInput, { target: { value: '+123456789' } });
+    fireEvent.change(emailInput, { target: { value: 'jane@example.com' } });
     fireEvent.click(submitButton);
     
     await waitFor(() => {

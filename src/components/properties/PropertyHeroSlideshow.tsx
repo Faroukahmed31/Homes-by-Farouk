@@ -25,7 +25,7 @@ export function PropertyHeroSlideshow({ property }: PropertyHeroSlideshowProps) 
   };
 
   return (
-    <section className="relative w-full h-[85vh] overflow-hidden border-b border-primary/20 bg-black">
+    <section className="relative w-full min-h-[60vh] sm:min-h-[65vh] md:min-h-[75vh] lg:h-[85vh] overflow-hidden border-b border-primary/20 bg-black">
       {/* Background Slideshow */}
       <div className="absolute inset-0">
         <AnimatePresence mode="wait">
@@ -46,13 +46,13 @@ export function PropertyHeroSlideshow({ property }: PropertyHeroSlideshowProps) 
       <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-black/20"></div>
       
       {/* Content Area */}
-      <div className="absolute inset-0 flex flex-col justify-end px-6 md:px-20 pb-16 md:pb-24 pointer-events-none">
-        <div className="max-w-4xl space-y-6 pointer-events-auto">
+      <div className="absolute inset-0 z-10 flex flex-col justify-end px-6 md:px-20 py-10 sm:py-12 md:py-20 pb-28 sm:pb-32 md:pb-24 pointer-events-none">
+        <div className="max-w-4xl space-y-4 sm:space-y-6 pointer-events-auto">
           <motion.h1 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-4xl md:text-8xl font-heading text-primary leading-none"
+            className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-heading text-primary leading-tight md:leading-none"
           >
             {property.title}
           </motion.h1>
@@ -61,22 +61,22 @@ export function PropertyHeroSlideshow({ property }: PropertyHeroSlideshowProps) 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="flex flex-wrap items-center gap-8 text-white/90 font-sans text-lg md:text-xl"
+            className="flex flex-wrap items-center gap-4 sm:gap-8 text-white/90 font-sans text-base sm:text-lg md:text-xl"
           >
-            <div className="flex items-center gap-3">
-              <MapPin className="size-6 text-primary" />
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              <MapPin className="size-5 sm:size-6 text-primary shrink-0" />
               <span className="tracking-wide text-white">{property.location}</span>
             </div>
             
-            <div className="flex items-center gap-3 border-l border-white/20 pl-8">
+            <div className="flex flex-wrap items-center gap-3 sm:border-l sm:border-white/20 sm:pl-8">
               <div className="flex flex-col">
-                <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-white mb-1">Starting From</span>
-                <span className="text-2xl font-bold font-heading">{formatPrice(property.startingPrice)}</span>
+                <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-white/80 mb-0.5 sm:mb-1">Starting From</span>
+                <span className="text-xl sm:text-2xl font-bold font-heading text-white">{formatPrice(property.startingPrice || 0)}</span>
               </div>
               <select
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value as any)}
-                className="ml-4 bg-black/65 border border-primary/50 text-primary rounded-none py-2 px-3.5 font-sans text-xs tracking-widest uppercase font-bold focus:ring-1 focus:ring-primary focus:border-primary cursor-pointer hover:bg-black/85 transition-all select-none"
+                className="ml-2 sm:ml-4 bg-black/65 border border-primary/50 text-primary rounded-none py-1.5 sm:py-2 px-2.5 sm:px-3.5 font-sans text-[11px] sm:text-xs tracking-widest uppercase font-bold focus:ring-1 focus:ring-primary focus:border-primary cursor-pointer hover:bg-black/85 transition-all select-none"
               >
                 <option className="bg-[#12141a]" value="KES">KES</option>
                 <option className="bg-[#12141a]" value="USD">USD ($)</option>
@@ -91,29 +91,29 @@ export function PropertyHeroSlideshow({ property }: PropertyHeroSlideshowProps) 
       </div>
 
       {/* Navigation & Indicators */}
-      <div className="absolute bottom-8 right-6 md:right-20 flex flex-col items-end gap-6">
-        <div className="flex items-center gap-4">
-          <div className="px-6 py-3 bg-black/40 backdrop-blur-2xl border border-white/10 text-[10px] uppercase tracking-[0.4em] font-bold text-white flex items-center gap-4">
+      <div className="absolute bottom-6 md:bottom-8 right-6 md:right-20 z-20 flex flex-col items-end gap-4 sm:gap-6">
+        <div className="flex flex-wrap items-center justify-end gap-3 sm:gap-4">
+          <div className="px-4 sm:px-6 py-2.5 sm:py-3 bg-black/40 backdrop-blur-2xl border border-white/10 text-[10px] uppercase tracking-[0.3em] sm:tracking-[0.4em] font-bold text-white flex items-center gap-3 sm:gap-4">
             <span className="text-primary">{String(currentIndex + 1).padStart(2, '0')}</span>
-            <div className="w-12 h-px bg-white/20"></div>
+            <div className="w-8 sm:w-12 h-px bg-white/20"></div>
             <span>{String(images.length).padStart(2, '0')}</span>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-1.5 sm:gap-2">
             <Button
               variant="ghost"
               size="icon"
               onClick={prevSlide}
-              className="size-14 rounded-none border border-white/10 bg-black/40 hover:bg-primary hover:text-primary-foreground backdrop-blur-md transition-all"
+              className="size-11 sm:size-14 rounded-none border border-white/10 bg-black/40 hover:bg-primary hover:text-primary-foreground backdrop-blur-md transition-all cursor-pointer"
             >
-              <ChevronLeft className="size-6" />
+              <ChevronLeft className="size-5 sm:size-6" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
               onClick={nextSlide}
-              className="size-14 rounded-none border border-white/10 bg-black/40 hover:bg-primary hover:text-primary-foreground backdrop-blur-md transition-all"
+              className="size-11 sm:size-14 rounded-none border border-white/10 bg-black/40 hover:bg-primary hover:text-primary-foreground backdrop-blur-md transition-all cursor-pointer"
             >
-              <ChevronRight className="size-6" />
+              <ChevronRight className="size-5 sm:size-6" />
             </Button>
           </div>
         </div>
