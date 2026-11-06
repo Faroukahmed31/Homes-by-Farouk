@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { LeadMagnetSplit } from './LeadMagnetSplit';
 import * as leadsAction from '@/app/actions/leads';
 
@@ -9,6 +9,13 @@ vi.mock('@/app/actions/leads', () => ({
 }));
 
 describe('LeadMagnetSplit', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: vi.fn().mockResolvedValue({ success: true }),
+    } as any);
+  });
   it('shows success message after local playbook submission', async () => {
     render(<LeadMagnetSplit />);
     

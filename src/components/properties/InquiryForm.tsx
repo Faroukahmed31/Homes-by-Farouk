@@ -90,6 +90,30 @@ export function InquiryForm({ property }: InquiryFormProps) {
         formData.append('clientLat', coords.lat.toString());
         formData.append('clientLon', coords.lon.toString());
       }
+      // Forward lead details to Web3Forms for instant email notification
+      try {
+        await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify({
+            access_key: '747a34d5-97f6-4e99-b08d-04626f7699b5',
+            name: values.name,
+            email: values.email,
+            phone: values.phone,
+            subject: `New Property Inquiry: ${property.title} from ${values.name}`,
+            from_name: 'Homes by Farouk Inquiries',
+            property_title: property.title,
+            property_location: property.location,
+            message: values.message || `Client inquired about ${property.title} in ${property.location}.`,
+          }),
+        });
+      } catch (web3Err) {
+        console.warn('Web3Forms inquiry dispatch warning:', web3Err);
+      }
+
       await captureLead(formData);
       setSuccess(true);
     } catch (error) {

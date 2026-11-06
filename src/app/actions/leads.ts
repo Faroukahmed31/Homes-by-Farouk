@@ -120,6 +120,16 @@ export async function captureLead(formData: FormData) {
 
     if (adminSendResult.error) {
       console.warn('Admin notification email error:', adminSendResult.error);
+      // Fallback: If onboarding@resend.dev failed because custom domain is not yet verified, deliver to sandbox-registered account
+      if (adminSendResult.error.message?.includes('faroukahmed3121@gmail.com') || adminSendResult.error.statusCode === 403) {
+        await resend.emails.send({
+          from: fromEmail,
+          to: 'faroukahmed3121@gmail.com',
+          replyTo: email,
+          subject: `New Lead: ${name} requested ${guideType}`,
+          text: `Name: ${name}\nEmail: ${email}\nGuide/Property: ${guideType}\nPhone: ${phone}\nMessage: ${message}\nLocation: ${clientCity || 'Unknown'}, ${clientCountry || 'Unknown'} (Coords: ${clientLat || 'N/A'}, ${clientLon || 'N/A'})`,
+        }).catch((e) => console.warn('Admin fallback email notice:', e));
+      }
     }
     
     // Send the guide PDF ONLY to the user's email address
@@ -135,7 +145,7 @@ export async function captureLead(formData: FormData) {
       });
 
       if (userSendResult.error) {
-        console.warn('User guide delivery error (Resend domain verification required to send to external recipients):', userSendResult.error);
+        console.warn('User guide delivery notice (requires verified custom domain at resend.com/domains for external recipients):', userSendResult.error);
       }
     }
     
