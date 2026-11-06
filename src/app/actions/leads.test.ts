@@ -66,7 +66,7 @@ describe('captureLead Action', () => {
     expect(mockSend).toHaveBeenCalledTimes(2);
 
     // Verify admin alert has no attachments (leads info only)
-    const adminCall = mockSend.mock.calls.find((call) => call[0].to === 'faroukahmed3121@gmail.com');
+    const adminCall = mockSend.mock.calls.find((call) => call[0].to === 'farouk@homesbyfarouk.co.ke');
     expect(adminCall).toBeDefined();
     expect(adminCall[0].attachments).toBeUndefined();
 

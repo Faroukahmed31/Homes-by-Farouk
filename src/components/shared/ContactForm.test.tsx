@@ -11,6 +11,10 @@ vi.mock('@/app/actions/contact', () => ({
 describe('ContactForm Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: vi.fn().mockResolvedValue({ success: true, message: 'Form submitted successfully!' }),
+    } as any);
   });
 
   it('renders all form fields', () => {
@@ -48,6 +52,13 @@ describe('ContactForm Component', () => {
     fireEvent.click(submitBtn);
     
     await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledWith(
+        'https://api.web3forms.com/submit',
+        expect.objectContaining({
+          method: 'POST',
+          body: expect.stringContaining('747a34d5-97f6-4e99-b08d-04626f7699b5'),
+        })
+      );
       expect(submitInquiry).toHaveBeenCalled();
     });
     

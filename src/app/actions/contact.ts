@@ -38,7 +38,7 @@ export async function submitInquiry(formData: {
     // Send notification to Farouk
     await resend.emails.send({
       from: 'Homes by Farouk <onboarding@resend.dev>',
-      to: 'faroukahmed3121@gmail.com',
+      to: 'farouk@homesbyfarouk.co.ke',
       replyTo: email,
       subject: `New Inquiry: ${inquiryType} from ${name}`,
       text: `

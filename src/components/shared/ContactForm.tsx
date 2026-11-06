@@ -45,16 +45,41 @@ export function ContactForm() {
     setError(null);
     
     // Combine country code with phone number
-    const finalData = {
-      ...data,
-      phone: `${countryCode} ${data.phone}`,
-    };
+    const formattedPhone = `${countryCode} ${data.phone}`;
     
     try {
-      const result = await submitInquiry(finalData);
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          access_key: '747a34d5-97f6-4e99-b08d-04626f7699b5',
+          name: data.name,
+          email: data.email,
+          phone: formattedPhone,
+          inquiry_type: data.inquiryType,
+          message: data.message,
+          subject: `New Inquiry from ${data.name} - Homes by Farouk`,
+          from_name: 'Homes by Farouk Website',
+        }),
+      });
+
+      const result = await response.json();
+
       if (result.success) {
         setIsSuccess(true);
         reset();
+
+        // Also back up inquiry to database
+        submitInquiry({
+          name: data.name,
+          email: data.email,
+          phone: formattedPhone,
+          inquiryType: data.inquiryType,
+          message: data.message,
+        }).catch((err) => console.warn('Database lead backup skipped:', err));
       } else {
         setError(result.message || 'Something went wrong. Please try again.');
       }

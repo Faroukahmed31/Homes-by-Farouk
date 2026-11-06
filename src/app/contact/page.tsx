@@ -54,8 +54,8 @@ export default function ContactPage() {
                   </div>
                   <div className="flex flex-col">
                     <span className="text-[10px] uppercase tracking-[0.2em] text-foreground/40 font-bold">Email</span>
-                    <a href="mailto:faroukahmed3121@gmail.com" className="text-lg text-foreground hover:text-primary transition-colors font-sans">
-                      faroukahmed3121@gmail.com
+                    <a href="mailto:farouk@homesbyfarouk.co.ke" className="text-lg text-foreground hover:text-primary transition-colors font-sans">
+                      farouk@homesbyfarouk.co.ke
                     </a>
                   </div>
                 </div>

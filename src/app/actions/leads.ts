@@ -112,7 +112,7 @@ export async function captureLead(formData: FormData) {
     // Send lead alert ONLY to admin (strictly lead information, no guide attachment)
     const adminSendResult = await resend.emails.send({
       from: fromEmail,
-      to: 'faroukahmed3121@gmail.com',
+      to: 'farouk@homesbyfarouk.co.ke',
       replyTo: email,
       subject: `New Lead: ${name} requested ${guideType}`,
       text: `Name: ${name}\nEmail: ${email}\nGuide/Property: ${guideType}\nPhone: ${phone}\nMessage: ${message}\nLocation: ${clientCity || 'Unknown'}, ${clientCountry || 'Unknown'} (Coords: ${clientLat || 'N/A'}, ${clientLon || 'N/A'})`,
