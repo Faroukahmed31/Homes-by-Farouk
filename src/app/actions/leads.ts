@@ -3,8 +3,10 @@
 import { Resend } from 'resend';
 import { saveLead } from '@/lib/leads';
 import { headers } from 'next/headers';
+import fs from 'fs';
+import path from 'path';
 
-const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+const getResend = () => (process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null);
 
 export async function captureLead(formData: FormData) {
   const name = formData.get('name') as string;
@@ -66,29 +68,75 @@ export async function captureLead(formData: FormData) {
   // Simulate network delay
   await new Promise((resolve) => setTimeout(resolve, 500));
 
+  const resend = getResend();
   if (!resend) {
     console.warn('RESEND_API_KEY is missing. Email skipped.');
     return { success: true, message: 'Lead captured (email skipped due to configuration)' };
   }
 
+  const fromEmail = process.env.RESEND_FROM_EMAIL || 'Homes by Farouk <onboarding@resend.dev>';
+
+  // Prepare PDF attachment if this was a guide or playbook request
+  const isGuideRequest = guideType === 'local' || guideType === 'foreign' || guideType === 'investment-guide' || guideType === 'guide';
+  let attachments: { filename: string; content: Buffer }[] = [];
+  let guideTitle = '';
+
+  if (isGuideRequest) {
+    const isLocal = guideType === 'local';
+    const pdfFilename = isLocal 
+      ? 'Homes_by_Farouk_Local_Buyer_Playbook.pdf' 
+      : 'Homes_by_Farouk_Foreign_Investor_Guide.pdf';
+    guideTitle = isLocal
+      ? 'The Nairobi Real Estate Playbook: 5 Costly Mistakes'
+      : 'The Complete Guide to Investing in Nairobi Real Estate';
+
+    const filePath = path.join(process.cwd(), 'public', 'assets', pdfFilename);
+
+    try {
+      if (fs.existsSync(filePath)) {
+        attachments = [
+          {
+            filename: pdfFilename,
+            content: fs.readFileSync(filePath),
+          },
+        ];
+      } else {
+        console.warn(`Guide PDF not found on disk: ${filePath}`);
+      }
+    } catch (fileErr) {
+      console.warn('Failed to load PDF attachment for lead guide:', fileErr);
+    }
+  }
+
   try {
-    // Send notification to admin
-    await resend.emails.send({
-      from: 'Homes by Farouk <onboarding@resend.dev>',
+    // Send lead alert ONLY to admin (strictly lead information, no guide attachment)
+    const adminSendResult = await resend.emails.send({
+      from: fromEmail,
       to: 'faroukahmed3121@gmail.com',
       replyTo: email,
       subject: `New Lead: ${name} requested ${guideType}`,
       text: `Name: ${name}\nEmail: ${email}\nGuide/Property: ${guideType}\nPhone: ${phone}\nMessage: ${message}\nLocation: ${clientCity || 'Unknown'}, ${clientCountry || 'Unknown'} (Coords: ${clientLat || 'N/A'}, ${clientLon || 'N/A'})`,
     });
+
+    if (adminSendResult.error) {
+      console.warn('Admin notification email error:', adminSendResult.error);
+    }
     
-    // Send the guide to the user if it was a playbook download
-    if (guideType === 'local' || guideType === 'foreign') {
-      await resend.emails.send({
-        from: 'Homes by Farouk <onboarding@resend.dev>',
+    // Send the guide PDF ONLY to the user's email address
+    if (isGuideRequest) {
+      const clientName = name?.trim() || 'Investor';
+
+      const userSendResult = await resend.emails.send({
+        from: fromEmail,
         to: email,
-        subject: `Your Guide: ${guideType === 'local' ? 'The Nairobi Real Estate Playbook' : 'Investing in Nairobi Guide'}`,
-        text: `Hi ${name},\n\nThank you for your interest in Homes by Farouk.\n\nYou can download your guide here: https://homesbyfarouk.com/assets/${guideType === 'local' ? 'Homes_by_Farouk_Local_Buyer_Playbook.pdf' : 'Homes_by_Farouk_Foreign_Investor_Guide.pdf'}\n\nBest regards,\nFarouk Ahmed`,
+        subject: `Your Guide: ${guideTitle}`,
+        text: `Hi ${clientName},\n\nThank you for your interest in Homes by Farouk.\n\nPlease find your complimentary copy of "${guideTitle}" attached directly to this email as a PDF.\n\nInside, you will find actionable market insights to help you navigate Nairobi's prime residential market, off-plan structures, and safeguarding your capital.\n\nIf you have any questions or would like to discuss current opportunities, feel free to reply directly to this email or reach out on WhatsApp at +254 721 599 075.\n\nWarm regards,\nFarouk Ahmed\nHomes by Farouk\nNairobi, Kenya`,
+        ...(attachments.length > 0 ? { attachments } : {}),
       });
+
+      if (userSendResult.error) {
+        console.warn('User guide delivery error (Resend domain verification required to send to external recipients):', userSendResult.error);
+      }
     }
     
     return { success: true, message: 'Your inquiry has been successfully logged!' };

@@ -33,6 +33,24 @@ describe('PropertyList', () => {
     expect(cards.length).toBe(3);
   });
 
+  it('filters properties by location', () => {
+    render(<PropertyList initialProperties={properties} />);
+    const locationSelect = screen.getByDisplayValue(/Any Location/i);
+    
+    fireEvent.change(locationSelect, { target: { value: 'westlands' } });
+    
+    const cards = screen.getAllByRole('heading', { level: 3 });
+    expect(cards.length).toBe(2);
+    expect(screen.getByText(/Brookside One Residency/i)).toBeInTheDocument();
+    expect(screen.getByText(/The Westlands Pinnacle/i)).toBeInTheDocument();
+
+    // Test brookside filter
+    fireEvent.change(locationSelect, { target: { value: 'brookside' } });
+    const brooksideCards = screen.getAllByRole('heading', { level: 3 });
+    expect(brooksideCards.length).toBe(1);
+    expect(screen.getByText(/Brookside One Residency/i)).toBeInTheDocument();
+  });
+
   it('filters properties when toggling between Apartments and Villas', () => {
     render(<PropertyList initialProperties={properties} />);
 

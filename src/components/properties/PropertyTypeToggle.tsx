@@ -49,20 +49,20 @@ export function PropertyTypeToggle({
   ];
 
   return (
-    <div className={`flex flex-col sm:flex-row items-center justify-between gap-4 ${className}`}>
+    <div className={`flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${className}`}>
       {/* Label / Subtitle */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 self-start sm:self-auto">
         <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
         <span className="text-[11px] uppercase tracking-[0.25em] font-semibold text-white/70">
           Residence Collection
         </span>
       </div>
 
-      {/* Pill Toggle Switch */}
+      {/* Pill Toggle Switch: vertical stack on mobile ("go down"), horizontal pill on desktop */}
       <div
         role="tablist"
         aria-label="Filter by property type"
-        className="relative inline-flex p-1.5 rounded-full bg-[#0A1015]/90 backdrop-blur-xl border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.6)] ring-1 ring-white/5"
+        className="relative flex flex-col sm:inline-flex sm:flex-row w-full sm:w-auto p-1.5 rounded-2xl sm:rounded-full bg-[#0A1015]/90 backdrop-blur-xl border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.6)] ring-1 ring-white/5 gap-1.5 sm:gap-0"
       >
         {options.map((option) => {
           const isActive = value === option.id;
@@ -75,7 +75,7 @@ export function PropertyTypeToggle({
               role="tab"
               aria-selected={isActive}
               onClick={() => onChange(option.id)}
-              className={`relative px-5 py-2.5 rounded-full text-xs font-semibold tracking-wider uppercase transition-colors duration-200 flex items-center gap-2 cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+              className={`relative w-full sm:w-auto px-5 py-3 sm:py-2.5 rounded-xl sm:rounded-full text-xs font-semibold tracking-wider uppercase transition-colors duration-200 flex items-center justify-between sm:justify-start gap-2 cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
                 isActive ? 'text-[#0A1015]' : 'text-gray-400 hover:text-white'
               }`}
             >
@@ -83,7 +83,7 @@ export function PropertyTypeToggle({
               {isActive && (
                 <motion.div
                   layoutId="propertyTypeIndicator"
-                  className="absolute inset-0 rounded-full bg-gradient-to-r from-[#D4AF37] via-[#F2CA50] to-[#C59B27] shadow-[0_0_20px_rgba(212,175,55,0.4)]"
+                  className="absolute inset-0 rounded-xl sm:rounded-full bg-gradient-to-r from-[#D4AF37] via-[#F2CA50] to-[#C59B27] shadow-[0_0_20px_rgba(212,175,55,0.4)]"
                   transition={{
                     type: 'spring',
                     stiffness: 450,
@@ -93,9 +93,11 @@ export function PropertyTypeToggle({
               )}
 
               {/* Content sits above sliding background */}
-              <span className="relative z-10 flex items-center gap-2 font-medium">
-                <Icon size={14} className={isActive ? 'text-[#0A1015]' : 'text-gray-400'} />
-                <span>{option.label}</span>
+              <span className="relative z-10 flex items-center justify-between w-full sm:w-auto gap-2 font-medium">
+                <span className="flex items-center gap-2">
+                  <Icon size={14} className={isActive ? 'text-[#0A1015]' : 'text-gray-400'} />
+                  <span>{option.label}</span>
+                </span>
                 {typeof count === 'number' && (
                   <span
                     className={`ml-1 text-[10px] px-1.5 py-0.5 rounded-full font-bold transition-colors ${

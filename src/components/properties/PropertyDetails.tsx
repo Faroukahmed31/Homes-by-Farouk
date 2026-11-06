@@ -26,7 +26,18 @@ import {
   ConciergeBell,
   Clapperboard,
   Film,
-  Projector
+  Projector,
+  Users,
+  Briefcase,
+  ShoppingCart,
+  Store,
+  Laptop,
+  Flower2,
+  HandHeart,
+  Wine,
+  Martini,
+  Sunset,
+  Sofa
 } from 'lucide-react';
 
 interface PropertyDetailsProps {
@@ -57,6 +68,39 @@ const iconMap: Record<string, any> = {
   Projector,
   SkyCinema: Clapperboard,
   Cinema: Film,
+  // Conference Room options
+  Users,
+  Briefcase,
+  ConferenceRoom: Users,
+  Conference: Users,
+  MeetingRoom: Users,
+  // Supermarket options
+  ShoppingCart,
+  Store,
+  Supermarket: ShoppingCart,
+  Market: Store,
+  Grocery: ShoppingCart,
+  // Co-Working Space options
+  Laptop,
+  CoWorking: Laptop,
+  CoWorkingSpace: Laptop,
+  Coworking: Laptop,
+  CoworkingSpace: Laptop,
+  // Massage Room options
+  Flower2,
+  HandHeart,
+  MassageRoom: Flower2,
+  Massage: Flower2,
+  Spa: Flower2,
+  // Residence Sky Lounge options
+  Wine,
+  Martini,
+  Sunset,
+  Sofa,
+  SkyLounge: Wine,
+  ResidenceSkyLounge: Wine,
+  SkyLonge: Wine,
+  ResidenceSkyLonge: Wine,
 };
 
 export function PropertyDetails({ property }: PropertyDetailsProps) {

@@ -2,10 +2,19 @@ import { neon } from '@neondatabase/serverless';
 import { Property } from '@/types/property';
 import { properties as seedData } from '@/data/properties';
 
-const sql = neon(process.env.POSTGRES_URL || '');
+function getSql() {
+  const url = process.env.POSTGRES_URL;
+  if (!url) return null;
+  return neon(url);
+}
 
 // Automatically ensures the properties table exists and is seeded with luxury listings
 export async function initPropertiesTable() {
+  const sql = getSql();
+  if (!sql) {
+    console.warn('POSTGRES_URL is not set. Skipping properties table initialization.');
+    return;
+  }
   try {
     // 1. Create table if not exists
     await sql`
@@ -125,6 +134,8 @@ function mapDbRowToProperty(row: any): Property {
 
 // Queries all properties (instant serverless execution)
 export async function getPropertiesFromNeon(): Promise<Property[]> {
+  const sql = getSql();
+  if (!sql) return seedData;
   try {
     await initPropertiesTable();
     const result = await sql`
@@ -140,6 +151,8 @@ export async function getPropertiesFromNeon(): Promise<Property[]> {
 
 // Queries a single property by its slug (instant serverless execution)
 export async function getPropertyBySlug(slug: string): Promise<Property | null> {
+  const sql = getSql();
+  if (!sql) return seedData.find(p => p.slug === slug) || null;
   try {
     await initPropertiesTable();
     const result = await sql`

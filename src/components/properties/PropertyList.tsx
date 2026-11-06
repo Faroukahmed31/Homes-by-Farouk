@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PropertyCard } from '@/components/properties/PropertyCard';
 import { PropertyTypeToggle } from '@/components/properties/PropertyTypeToggle';
+import { LuxuryPagination } from '@/components/ui/LuxuryPagination';
 import { Property, PropertyFilterType } from '@/types/property';
 import { Search } from 'lucide-react';
 
@@ -20,9 +21,12 @@ export function PropertyList({ initialProperties }: PropertyListProps) {
     status: 'All',
     search: '',
     location: 'any',
-    purpose: 'buy',
+    purpose: 'all' as 'all' | 'buy' | 'rent',
     propertyType: 'ALL' as PropertyFilterType,
   });
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
 
   // Sync state if initialProperties changes on the server
   useEffect(() => {
@@ -34,7 +38,7 @@ export function PropertyList({ initialProperties }: PropertyListProps) {
   // Initialize filters from URL parameters
   useEffect(() => {
     const statusParam = searchParams.get('status');
-    const locationParam = searchParams.get('location');
+    const locationParam = searchParams.get('location') || searchParams.get('neighborhood');
     const purposeParam = searchParams.get('purpose');
     const typeParam = searchParams.get('type') || searchParams.get('propertyType');
     
@@ -48,8 +52,8 @@ export function PropertyList({ initialProperties }: PropertyListProps) {
     setFilter(prev => ({
       ...prev,
       status: statusParam === 'ready' ? 'Ready' : statusParam === 'off-plan' ? 'Off-Plan' : 'All',
-      location: locationParam || 'any',
-      purpose: (purposeParam as 'buy' | 'rent') || 'buy',
+      location: locationParam ? locationParam.toLowerCase() : 'any',
+      purpose: (purposeParam as 'all' | 'buy' | 'rent') || 'all',
       propertyType: parsedType,
     }));
   }, [searchParams]);
@@ -69,9 +73,11 @@ export function PropertyList({ initialProperties }: PropertyListProps) {
                           p.location.toLowerCase().includes(filter.search.toLowerCase());
       const matchLocation = filter.location === 'any' || 
                             p.location.toLowerCase().includes(filter.location.toLowerCase());
-      const matchPurpose = filter.purpose === 'buy'
-        ? (p.listingType === 'SALE' || p.listingType === 'BOTH')
-        : (p.listingType === 'RENT' || p.listingType === 'BOTH');
+      const matchPurpose = filter.purpose === 'all'
+        ? true
+        : filter.purpose === 'buy'
+          ? (p.listingType === 'SALE' || p.listingType === 'BOTH')
+          : (p.listingType === 'RENT' || p.listingType === 'BOTH');
       return matchStatus && matchSearch && matchLocation && matchPurpose;
     });
 
@@ -96,16 +102,31 @@ export function PropertyList({ initialProperties }: PropertyListProps) {
       
       // Location Match
       const matchLocation = filter.location === 'any' || 
-                            p.location.toLowerCase().includes(filter.location.toLowerCase());
+                            p.location.toLowerCase().includes(filter.location.toLowerCase()) ||
+                            p.title.toLowerCase().includes(filter.location.toLowerCase());
 
       // Purpose Match
-      const matchPurpose = filter.purpose === 'buy'
-        ? (p.listingType === 'SALE' || p.listingType === 'BOTH')
-        : (p.listingType === 'RENT' || p.listingType === 'BOTH');
+      const matchPurpose = filter.purpose === 'all'
+        ? true
+        : filter.purpose === 'buy'
+          ? (p.listingType === 'SALE' || p.listingType === 'BOTH')
+          : (p.listingType === 'RENT' || p.listingType === 'BOTH');
       
       return matchType && matchStatus && matchSearch && matchLocation && matchPurpose;
     });
   }, [filter, propertiesList]);
+
+  // Reset pagination to page 1 whenever any filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filter]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredProperties.length / itemsPerPage));
+
+  const paginatedProperties = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredProperties.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredProperties, currentPage, itemsPerPage]);
 
   return (
     <div className="w-full">
@@ -125,8 +146,9 @@ export function PropertyList({ initialProperties }: PropertyListProps) {
           <select 
             className="bg-transparent border-0 border-b border-primary/30 text-white py-2 focus:ring-0 cursor-pointer font-sans w-full"
             value={filter.purpose}
-            onChange={(e) => setFilter({...filter, purpose: e.target.value as 'buy' | 'rent'})}
+            onChange={(e) => setFilter({...filter, purpose: e.target.value as 'all' | 'buy' | 'rent'})}
           >
+            <option className="bg-[#131313]" value="all">All Purposes</option>
             <option className="bg-[#131313]" value="buy">For Sale</option>
             <option className="bg-[#131313]" value="rent">To Rent</option>
           </select>
@@ -148,9 +170,11 @@ export function PropertyList({ initialProperties }: PropertyListProps) {
           >
             <option className="bg-[#131313]" value="any">Any Location</option>
             <option className="bg-[#131313]" value="westlands">Westlands</option>
+            <option className="bg-[#131313]" value="kileleshwa">Kileleshwa</option>
             <option className="bg-[#131313]" value="kilimani">Kilimani</option>
-            <option className="bg-[#131313]" value="karen">Karen</option>
-            <option className="bg-[#131313]" value="muthaiga">Muthaiga</option>
+            <option className="bg-[#131313]" value="syokimau">Syokimau</option>
+            <option className="bg-[#131313]" value="riverside">Riverside</option>
+            <option className="bg-[#131313]" value="brookside">Brookside</option>
           </select>
         </div>
       </div>
@@ -167,13 +191,31 @@ export function PropertyList({ initialProperties }: PropertyListProps) {
 
       {/* Results Grid with Smooth Transitions */}
       {filteredProperties.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 transition-all duration-300">
-          {filteredProperties.map((property) => (
-            <div key={property.slug} className="transition-opacity duration-300">
-              <PropertyCard property={property} />
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 transition-all duration-300">
+            {paginatedProperties.map((property) => (
+              <div key={property.slug} className="transition-opacity duration-300">
+                <PropertyCard property={property} />
+              </div>
+            ))}
+          </div>
+
+          {/* Luxury Pagination */}
+          {totalPages > 1 && (
+            <div className="mt-16 flex justify-center">
+              <LuxuryPagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={(page) => {
+                  setCurrentPage(page);
+                  if (typeof window !== 'undefined') {
+                    window.scrollTo({ top: 350, behavior: 'smooth' });
+                  }
+                }}
+              />
             </div>
-          ))}
-        </div>
+          )}
+        </>
       ) : (
         <div className="text-center py-20 glass-panel gold-border">
           <h3 className="text-xl text-primary font-heading mb-2">No matching properties found</h3>

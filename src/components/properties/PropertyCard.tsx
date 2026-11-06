@@ -58,32 +58,30 @@ export function PropertyCard({ property }: PropertyCardProps) {
         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
       />
       
-      {/* Listing & Property Type Badges */}
-      <div className="absolute top-6 left-6 flex flex-wrap gap-2 z-10">
+      {/* Badges Container */}
+      <div className="absolute top-4 sm:top-5 left-4 sm:left-5 right-4 sm:right-5 flex flex-wrap items-center gap-x-2 gap-y-2.5 z-10 pointer-events-none">
         {property.propertyType && (
-          <div className="backdrop-blur-md text-[10px] uppercase tracking-widest font-bold px-3 py-1.5 border bg-[#0A1015]/85 text-white/90 border-white/20">
+          <span className="h-7 px-3 inline-flex items-center justify-center backdrop-blur-md text-[10px] uppercase tracking-widest font-bold border bg-[#0A1015]/85 text-white/90 border-white/20 shadow-sm whitespace-nowrap shrink-0">
             {property.propertyType === 'APARTMENT' ? 'Apartment' : 'Villa'}
-          </div>
+          </span>
         )}
         {(property.listingType === 'SALE' || property.listingType === 'BOTH') && (
-          <div className="backdrop-blur-md text-[10px] uppercase tracking-widest font-bold px-3 py-1.5 border bg-primary/80 text-primary-foreground border-primary">
+          <span className="h-7 px-3 inline-flex items-center justify-center backdrop-blur-md text-[10px] uppercase tracking-widest font-bold border bg-primary/80 text-primary-foreground border-primary shadow-sm whitespace-nowrap shrink-0">
             For Sale
-          </div>
+          </span>
         )}
         {(property.listingType === 'RENT' || property.listingType === 'BOTH') && (
-          <div className="backdrop-blur-md text-[10px] uppercase tracking-widest font-bold px-3 py-1.5 border bg-[#0A1015]/85 text-white border-white/20">
+          <span className="h-7 px-3 inline-flex items-center justify-center backdrop-blur-md text-[10px] uppercase tracking-widest font-bold border bg-[#0A1015]/85 text-white border-white/20 shadow-sm whitespace-nowrap shrink-0">
             For Rent
-          </div>
+          </span>
         )}
-      </div>
-
-      {/* Status Badge */}
-      <div className={`absolute top-6 right-6 backdrop-blur-md text-xs font-bold px-4 py-2 border ${
-        isOffPlan 
-          ? 'bg-primary/80 text-primary-foreground border-primary' 
-          : 'bg-[#2E8B57]/80 text-white border-[#2E8B57]'
-      }`}>
-        {property.status}
+        <span className={`h-7 px-3 inline-flex items-center justify-center backdrop-blur-md text-[10px] uppercase tracking-widest font-bold border shadow-sm whitespace-nowrap shrink-0 ml-auto ${
+          isOffPlan 
+            ? 'bg-primary/80 text-primary-foreground border-primary' 
+            : 'bg-[#2E8B57]/80 text-white border-[#2E8B57]'
+        }`}>
+          {property.status}
+        </span>
       </div>
       
       {/* Content Overlay */}

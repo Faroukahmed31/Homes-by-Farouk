@@ -603,6 +603,22 @@ export function AdminPropertyForm({ property }: { property?: Property }) {
                       onChange={(e) => updateAmenity(index, 'iconName', e.target.value)}
                       className="w-full bg-[#1c1b1b] border-b border-white/20 py-1 text-sm focus:border-primary outline-none transition-colors"
                     >
+                      <option value="ConferenceRoom">Conference Room (Boardroom / Meeting)</option>
+                      <option value="Users">Users (Conference / Meeting Room)</option>
+                      <option value="Presentation">Presentation (Conference / Screen Room)</option>
+                      <option value="CoWorking">Co-Working Space (Workstations / Desks)</option>
+                      <option value="Laptop">Laptop (Co-Working / Dedicated Desk)</option>
+                      <option value="Supermarket">Supermarket (Grocery Store)</option>
+                      <option value="ShoppingCart">Shopping Cart (Supermarket / Mart)</option>
+                      <option value="Store">Store (Supermarket / Retail)</option>
+                      <option value="MassageRoom">Massage Room (Spa &amp; Wellness Therapy)</option>
+                      <option value="Flower2">Lotus / Spa (Massage Room / Wellness)</option>
+                      <option value="HandHeart">Hand &amp; Heart (Therapy &amp; Massage)</option>
+                      <option value="SkyLounge">Residence Sky Lounge (Rooftop &amp; Cocktails)</option>
+                      <option value="Wine">Wine / Bar (Residence Sky Lounge)</option>
+                      <option value="Martini">Martini / Cocktail (Sky Lounge)</option>
+                      <option value="Sunset">Sunset Skyline (Rooftop / Sky Lounge)</option>
+                      <option value="Sofa">Lounge Seating (Sofa / Sky Lounge)</option>
                       <option value="Clapperboard">Sky Cinema (Clapperboard)</option>
                       <option value="Film">Film (Cinema / Private Screening)</option>
                       <option value="Projector">Projector (Sky Cinema / Screening Room)</option>
@@ -614,7 +630,6 @@ export function AdminPropertyForm({ property }: { property?: Property }) {
                       <option value="Sparkles">Sparkles (Luxury Feature)</option>
                       <option value="Activity">Activity (Tennis / Sports Court)</option>
                       <option value="Flame">Flame (BBQ Area / Fire Pit)</option>
-                      <option value="Presentation">Presentation (Conference Room)</option>
                       <option value="Droplet">Droplet (Borehole / Water Supply)</option>
                       <option value="Zap">Zap (Backup Generator / Power)</option>
                       <option value="Baby">Baby (Children Play Area)</option>

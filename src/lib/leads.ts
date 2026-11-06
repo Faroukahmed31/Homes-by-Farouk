@@ -15,9 +15,18 @@ export interface Lead {
   clientIp?: string;
 }
 
-const sql = neon(process.env.POSTGRES_URL || '');
+function getSql() {
+  const url = process.env.POSTGRES_URL;
+  if (!url) return null;
+  return neon(url);
+}
 
 export async function initLeadsTable() {
+  const sql = getSql();
+  if (!sql) {
+    console.warn('POSTGRES_URL is not set. Skipping leads table initialization.');
+    return;
+  }
   try {
     // Create base table
     await sql`
@@ -46,6 +55,11 @@ export async function initLeadsTable() {
 }
 
 export async function saveLead(lead: Omit<Lead, 'id' | 'timestamp'>) {
+  const sql = getSql();
+  if (!sql) {
+    console.warn('POSTGRES_URL is not set. Skipping saving lead to database.');
+    return false;
+  }
   try {
     // Ensure table exists
     await initLeadsTable();
@@ -69,6 +83,11 @@ export async function saveLead(lead: Omit<Lead, 'id' | 'timestamp'>) {
 }
 
 export async function getLeads(): Promise<Lead[]> {
+  const sql = getSql();
+  if (!sql) {
+    console.warn('POSTGRES_URL is not set.');
+    return [];
+  }
   try {
     // Ensure table exists before querying
     await initLeadsTable();

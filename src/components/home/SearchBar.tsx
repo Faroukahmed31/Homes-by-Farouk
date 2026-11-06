@@ -73,9 +73,11 @@ export function SearchBar() {
             <SelectContent className="bg-card border-primary/20">
               <SelectItem value="any">Any Location</SelectItem>
               <SelectItem value="westlands">Westlands</SelectItem>
+              <SelectItem value="kileleshwa">Kileleshwa</SelectItem>
               <SelectItem value="kilimani">Kilimani</SelectItem>
-              <SelectItem value="karen">Karen</SelectItem>
-              <SelectItem value="muthaiga">Muthaiga</SelectItem>
+              <SelectItem value="syokimau">Syokimau</SelectItem>
+              <SelectItem value="riverside">Riverside</SelectItem>
+              <SelectItem value="brookside">Brookside</SelectItem>
             </SelectContent>
           </Select>
         </div>
