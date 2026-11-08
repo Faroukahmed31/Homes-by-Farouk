@@ -45,6 +45,11 @@ export function PropertyCard({ property }: PropertyCardProps) {
     const secondary = `USD ${usdVal.toLocaleString()} / month`;
     return { primary, secondary };
   };
+
+  const propertyTypeLabel = property.propertyType === 'APARTMENT' ? 'apartment' : property.propertyType === 'VILLA' ? 'villa' : 'property';
+  const listingLabel = property.listingType === 'RENT' ? 'for rent' : 'for sale';
+  const locationLabel = property.location || 'Nairobi';
+  const propertyAltText = `Luxury ${propertyTypeLabel} ${listingLabel} in ${locationLabel}, Nairobi - ${property.title}`;
   
   return (
     <Link 
@@ -53,7 +58,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
       data-testid="property-card"
     >
       <img 
-        alt={property.title} 
+        alt={propertyAltText} 
         src={property.heroImage} 
         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
       />

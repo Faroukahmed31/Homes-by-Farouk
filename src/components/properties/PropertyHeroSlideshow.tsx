@@ -24,6 +24,11 @@ export function PropertyHeroSlideshow({ property }: PropertyHeroSlideshowProps) 
     setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
   };
 
+  const propertyTypeLabel = property.propertyType === 'APARTMENT' ? 'apartment' : property.propertyType === 'VILLA' ? 'villa' : 'property';
+  const listingLabel = property.listingType === 'RENT' ? 'for rent' : 'for sale';
+  const locationLabel = property.location || 'Nairobi';
+  const slideAltText = `Luxury ${propertyTypeLabel} ${listingLabel} in ${locationLabel}, Nairobi - ${property.title} (Photo ${currentIndex + 1})`;
+
   return (
     <section className="relative w-full min-h-[60vh] sm:min-h-[65vh] md:min-h-[75vh] lg:h-[85vh] overflow-hidden border-b border-primary/20 bg-black">
       {/* Background Slideshow */}
@@ -32,7 +37,7 @@ export function PropertyHeroSlideshow({ property }: PropertyHeroSlideshowProps) 
           <motion.img
             key={currentIndex}
             src={images[currentIndex]}
-            alt={`${property.title} - Image ${currentIndex + 1}`}
+            alt={slideAltText}
             initial={{ opacity: 0, scale: 1.1 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1.05 }}

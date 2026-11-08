@@ -7,8 +7,8 @@ import { Phone, Mail, MapPin, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export const metadata: Metadata = {
-  title: 'Contact Us | Homes by Farouk',
-  description: "Get in touch with Nairobi's premier real estate advisory team for exclusive investment opportunities.",
+  title: 'Contact Nairobi Real Estate Consultant | Homes by Farouk',
+  description: "Connect directly with Farouk Ahmed for prime property consultations, off-plan development acquisitions, and luxury residential viewings in Nairobi.",
 };
 
 export default function ContactPage() {

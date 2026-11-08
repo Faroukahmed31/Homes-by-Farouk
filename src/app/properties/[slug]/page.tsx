@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getPropertyBySlug, getPropertiesFromNeon } from '@/lib/properties';
 import { PropertyHeroSlideshow } from '@/components/properties/PropertyHeroSlideshow';
@@ -18,6 +19,36 @@ export async function generateStaticParams() {
   return properties.map((property) => ({
     slug: property.slug,
   }));
+}
+
+export async function generateMetadata({ params }: PropertyPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const property = await getPropertyBySlug(slug);
+
+  if (!property) {
+    return {
+      title: 'Property Not Found | Homes by Farouk',
+      description: 'The requested Nairobi luxury property could not be found.',
+    };
+  }
+
+  const type = property.propertyType === 'APARTMENT' ? 'Apartment' : property.propertyType === 'VILLA' ? 'Villa' : 'Property';
+  const action = property.listingType === 'RENT' ? 'for Rent' : 'for Sale';
+  const location = property.location || 'Nairobi';
+
+  return {
+    title: `${property.title} | Luxury ${type} ${action} in ${location}, Nairobi`,
+    description: property.description || `Explore ${property.title}, an exclusive ${type.toLowerCase()} ${action.toLowerCase()} in ${location}, Nairobi. View floor plans, pricing schedules, and amenities with Homes by Farouk.`,
+    alternates: {
+      canonical: `/properties/${slug}`,
+    },
+    openGraph: {
+      title: `${property.title} | Luxury ${type} in ${location}, Nairobi`,
+      description: property.description || `Luxury ${type} in ${location}, Nairobi.`,
+      url: `https://homesbyfarouk.co.ke/properties/${slug}`,
+      images: property.heroImage ? [{ url: property.heroImage, alt: `${property.title} in ${location}, Nairobi` }] : [],
+    },
+  };
 }
 
 export default async function PropertyPage({ params }: PropertyPageProps) {

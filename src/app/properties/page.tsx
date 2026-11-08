@@ -5,8 +5,8 @@ import { PropertyList } from '@/components/properties/PropertyList';
 import { getPropertiesFromNeon } from '@/lib/properties';
 
 export const metadata = {
-  title: 'Luxury Property Listings in Nairobi | Homes by Farouk',
-  description: 'Browse our curated selection of premium apartments, villas, and off-plan investments in Nairobi\'s most prestigious neighborhoods.',
+  title: 'Luxury Property Listings in Nairobi | Apartments, Off-Plan & Villas',
+  description: 'Browse our curated selection of luxury off-plan developments, apartments, and villas across Nairobi\'s prime postcodes: Westlands, Kilimani, Kileleshwa, Riverside, and Brookside.',
 };
 
 export default async function PropertiesPage() {

@@ -7,8 +7,8 @@ import { ValueGrid } from "@/components/about/ValueGrid";
 import { CTASection } from "@/components/about/CTASection";
 
 export const metadata: Metadata = {
-  title: "About Us | Homes by Farouk",
-  description: "Learn about Farouk's passion, modern market expertise, and dedication to helping clients make smart financial decisions in Nairobi's real estate market.",
+  title: "About Farouk Ahmed | Nairobi Real Estate Consultant & Advisor",
+  description: "Learn about Farouk Ahmed's modern real estate consultancy, deep Nairobi market expertise, and dedicated advisory for prime residential and off-plan investments.",
 };
 
 export default function AboutPage() {
