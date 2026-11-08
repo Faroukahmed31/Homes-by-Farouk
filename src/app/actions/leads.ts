@@ -74,7 +74,7 @@ export async function captureLead(formData: FormData) {
     return { success: true, message: 'Lead captured (email skipped due to configuration)' };
   }
 
-  const fromEmail = process.env.RESEND_FROM_EMAIL || 'Homes by Farouk <onboarding@resend.dev>';
+  const fromEmail = process.env.RESEND_FROM_EMAIL || 'Farouk Ahmed <farouk@homesbyfarouk.co.ke>';
 
   // Prepare PDF attachment if this was a guide or playbook request
   const isGuideRequest = guideType === 'local' || guideType === 'foreign' || guideType === 'investment-guide' || guideType === 'guide';

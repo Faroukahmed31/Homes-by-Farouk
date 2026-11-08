@@ -48,43 +48,46 @@ export function ContactForm() {
     const formattedPhone = `${countryCode} ${data.phone}`;
     
     try {
-      const response = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({
-          access_key: '747a34d5-97f6-4e99-b08d-04626f7699b5',
-          name: data.name,
-          email: data.email,
-          phone: formattedPhone,
-          inquiry_type: data.inquiryType,
-          message: data.message,
-          subject: `New Inquiry from ${data.name} - Homes by Farouk`,
-          from_name: 'Homes by Farouk Website',
-        }),
-      });
+      // 1. Submit to Web3Forms for immediate site-owner lead notification
+      try {
+        await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify({
+            access_key: '747a34d5-97f6-4e99-b08d-04626f7699b5',
+            name: data.name,
+            email: data.email,
+            phone: formattedPhone,
+            inquiry_type: data.inquiryType,
+            message: data.message,
+            subject: `New Inquiry from ${data.name} - Homes by Farouk`,
+            from_name: 'Homes by Farouk Website',
+          }),
+        });
+      } catch (web3Err) {
+        console.warn('Web3Forms dispatch warning:', web3Err);
+      }
 
-      const result = await response.json();
+      // 2. Trigger Server Action to send confirmation email via Resend & save lead
+      const result = await submitInquiry({
+        name: data.name,
+        email: data.email,
+        phone: formattedPhone,
+        inquiryType: data.inquiryType,
+        message: data.message,
+      });
 
       if (result.success) {
         setIsSuccess(true);
         reset();
-
-        // Also back up inquiry to database
-        submitInquiry({
-          name: data.name,
-          email: data.email,
-          phone: formattedPhone,
-          inquiryType: data.inquiryType,
-          message: data.message,
-        }).catch((err) => console.warn('Database lead backup skipped:', err));
       } else {
-        setError(result.message || 'Something went wrong. Please try again.');
+        setError(result.message || 'Something went wrong while sending your inquiry. Please try again.');
       }
-    } catch (err) {
-      setError('An unexpected error occurred. Please try again later.');
+    } catch (err: any) {
+      setError(err?.message || 'An unexpected error occurred. Please try again later.');
     } finally {
       setIsSubmitting(false);
     }

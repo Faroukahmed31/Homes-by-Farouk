@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { submitInquiry } from './contact';
 import { saveLead } from '@/lib/leads';
-import { Resend } from 'resend';
 
 // Mock the dependencies
 vi.mock('@/lib/leads', () => ({
@@ -9,11 +8,13 @@ vi.mock('@/lib/leads', () => ({
   initLeadsTable: vi.fn().mockResolvedValue(true),
 }));
 
+const mockSend = vi.fn().mockResolvedValue({ data: { id: 'mock-id' }, error: null });
+
 vi.mock('resend', () => {
   return {
     Resend: vi.fn().mockImplementation(function (this: any) {
       this.emails = {
-        send: vi.fn().mockResolvedValue({ id: 'mock-id' }),
+        send: mockSend,
       };
       return this;
     }),
@@ -24,6 +25,7 @@ describe('submitInquiry Action', () => {
   beforeEach(() => {
     process.env.RESEND_API_KEY = 'mock_resend_key';
     vi.clearAllMocks();
+    mockSend.mockResolvedValue({ data: { id: 'mock-id' }, error: null });
   });
 
   const validData = {
@@ -46,10 +48,20 @@ describe('submitInquiry Action', () => {
     });
   });
 
-  it('returns success message when everything is valid', async () => {
+  it('sends automated confirmation email to the user with correct from, to, subject and template', async () => {
     const result = await submitInquiry(validData);
     expect(result.success).toBe(true);
     expect(result.message).toContain('shortly');
+
+    expect(mockSend).toHaveBeenCalledWith(
+      expect.objectContaining({
+        from: 'Farouk Ahmed <farouk@homesbyfarouk.co.ke>',
+        to: 'john@example.com',
+        subject: 'Thank You for Contacting Homes by Farouk',
+        html: expect.stringContaining('Thank you for reaching out, John Doe.'),
+        text: expect.stringContaining('Thank you for contacting Homes by Farouk.'),
+      })
+    );
   });
 
   it('handles missing Resend API key gracefully', async () => {
@@ -58,5 +70,16 @@ describe('submitInquiry Action', () => {
     const result = await submitInquiry(validData);
     expect(result.success).toBe(true);
     expect(result.message).toContain('skipped');
+  });
+
+  it('handles Resend error response appropriately', async () => {
+    mockSend.mockResolvedValueOnce({
+      data: null,
+      error: { message: 'Domain verification failed', name: 'validation_error' },
+    });
+
+    const result = await submitInquiry(validData);
+    expect(result.success).toBe(false);
+    expect(result.message).toContain('Domain verification failed');
   });
 });
