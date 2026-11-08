@@ -32,21 +32,24 @@ export async function generateMetadata({ params }: PropertyPageProps): Promise<M
     };
   }
 
-  const type = property.propertyType === 'APARTMENT' ? 'Apartment' : property.propertyType === 'VILLA' ? 'Villa' : 'Property';
-  const action = property.listingType === 'RENT' ? 'for Rent' : 'for Sale';
-  const location = property.location || 'Nairobi';
+  // Truncate the project description to 150 characters for the meta description
+  const metaDescription = property.description
+    ? property.description.length > 150
+      ? property.description.slice(0, 150)
+      : property.description
+    : '';
 
   return {
-    title: `${property.title} | Luxury ${type} ${action} in ${location}, Nairobi`,
-    description: property.description || `Explore ${property.title}, an exclusive ${type.toLowerCase()} ${action.toLowerCase()} in ${location}, Nairobi. View floor plans, pricing schedules, and amenities with Homes by Farouk.`,
+    title: `${property.title} | Homes by Farouk`,
+    description: metaDescription,
     alternates: {
       canonical: `/properties/${slug}`,
     },
     openGraph: {
-      title: `${property.title} | Luxury ${type} in ${location}, Nairobi`,
-      description: property.description || `Luxury ${type} in ${location}, Nairobi.`,
+      title: `${property.title} | Homes by Farouk`,
+      description: metaDescription,
       url: `https://homesbyfarouk.co.ke/properties/${slug}`,
-      images: property.heroImage ? [{ url: property.heroImage, alt: `${property.title} in ${location}, Nairobi` }] : [],
+      images: property.heroImage ? [{ url: property.heroImage, alt: `${property.title} | Homes by Farouk` }] : [],
     },
   };
 }
@@ -61,8 +64,30 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
     notFound();
   }
 
+  // RealEstateListing JSON-LD Schema mapped directly to database fields
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'RealEstateListing',
+    name: property.title,
+    image: property.heroImage,
+    description: property.description,
+    numberOfBedrooms: {
+      '@type': 'QuantitativeValue',
+      value: property.bedrooms,
+    },
+    floorSize: {
+      '@type': 'QuantitativeValue',
+      value: property.squareMeters,
+      unitCode: 'MTK',
+    },
+  };
+
   return (
     <CurrencyProvider>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
         <Navbar />
         
