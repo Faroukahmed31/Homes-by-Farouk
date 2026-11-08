@@ -2,33 +2,18 @@
 
 import React, { useState } from 'react';
 import { captureLead } from '@/app/actions/leads';
-import { Download, ExternalLink, CheckCircle2 } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 
 export function LeadMagnetSplit() {
   const [loading, setLoading] = useState<'local' | 'foreign' | null>(null);
   const [success, setSuccess] = useState<'local' | 'foreign' | null>(null);
 
-  const triggerDownload = (pdfUrl: string, fileName: string) => {
-    if (typeof window !== 'undefined') {
-      try {
-        const link = document.createElement('a');
-        link.href = pdfUrl;
-        link.download = fileName;
-        link.target = '_blank';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      } catch (err) {
-        console.warn('Auto download error:', err);
-      }
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>, type: 'local' | 'foreign') => {
     e.preventDefault();
     setLoading(type);
     
-    const formData = new FormData(e.currentTarget);
+    const formElement = e.currentTarget;
+    const formData = new FormData(formElement);
     formData.append('guideType', type);
 
     const name = (formData.get('name') as string) || '';
@@ -38,12 +23,6 @@ export function LeadMagnetSplit() {
     const guideName = isLocal
       ? 'The Nairobi Real Estate Playbook: 5 Costly Mistakes'
       : 'The Complete Guide to Investing in Nairobi Real Estate';
-    const pdfPath = isLocal
-      ? '/assets/Homes_by_Farouk_Local_Buyer_Playbook.pdf'
-      : '/assets/Homes_by_Farouk_Foreign_Investor_Guide.pdf';
-    const pdfFileName = isLocal
-      ? 'Homes_by_Farouk_Local_Buyer_Playbook.pdf'
-      : 'Homes_by_Farouk_Foreign_Investor_Guide.pdf';
 
     // 1. Submit lead details to Web3Forms for instant email notification
     try {
@@ -57,26 +36,25 @@ export function LeadMagnetSplit() {
           access_key: '747a34d5-97f6-4e99-b08d-04626f7699b5',
           name,
           email,
-          subject: `New Lead: ${name} downloaded ${guideName}`,
+          subject: `New Lead: ${name} requested ${guideName}`,
           from_name: 'Homes by Farouk Leads',
           guide_requested: guideName,
-          message: `${name} (${email}) requested download of "${guideName}". Direct PDF download initiated.`,
+          message: `${name} (${email}) requested "${guideName}". Automated email dispatched.`,
         }),
       });
     } catch (web3Err) {
       console.warn('Web3Forms dispatch warning:', web3Err);
     }
 
-    // 2. Persist lead in PostgreSQL database and trigger background notification
+    // 2. Persist lead in PostgreSQL database and trigger background notification via Resend
     try {
       await captureLead(formData);
     } catch (captureErr) {
       console.warn('Lead capture warning:', captureErr);
     }
 
-    // 3. Trigger immediate browser download of the PDF
-    triggerDownload(pdfPath, pdfFileName);
-
+    // Clear form fields
+    formElement.reset();
     setLoading(null);
     setSuccess(type);
   };
@@ -99,28 +77,9 @@ export function LeadMagnetSplit() {
                   <CheckCircle2 className="w-6 h-6 text-primary flex-shrink-0" />
                   <h3 className="text-xl font-heading text-primary">Check Your Email!</h3>
                 </div>
-                <p className="text-sm text-muted-foreground mb-6">
-                  Your playbook has started downloading automatically. We&apos;ve also sent a copy to your inbox.
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Thank you! The 2026 Investment Guide has been sent to your email.
                 </p>
-                <div className="flex flex-wrap gap-3">
-                  <a 
-                    href="/assets/Homes_by_Farouk_Local_Buyer_Playbook.pdf" 
-                    download="Homes_by_Farouk_Local_Buyer_Playbook.pdf"
-                    className="inline-flex items-center gap-2 red-button px-6 py-3 text-[10px] font-bold"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                    Download Directly
-                  </a>
-                  <a 
-                    href="/assets/Homes_by_Farouk_Local_Buyer_Playbook.pdf" 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 border border-primary/40 hover:border-primary text-white text-[10px] font-bold px-5 py-3 transition-colors"
-                  >
-                    <ExternalLink className="w-3.5 h-3.5" />
-                    Open PDF in Browser
-                  </a>
-                </div>
               </div>
             ) : (
               <>
@@ -147,7 +106,7 @@ export function LeadMagnetSplit() {
                     className="w-full red-button py-4 mt-4 text-xs font-bold disabled:opacity-50" 
                     type="submit"
                   >
-                    {loading === 'local' ? 'Preparing Your PDF...' : 'Get The Playbook'}
+                    {loading === 'local' ? 'Sending Guide...' : 'Get The Playbook'}
                   </button>
                 </form>
               </>
@@ -169,28 +128,9 @@ export function LeadMagnetSplit() {
                   <CheckCircle2 className="w-6 h-6 text-primary flex-shrink-0" />
                   <h3 className="text-xl font-heading text-primary">Guide is on its way!</h3>
                 </div>
-                <p className="text-sm text-muted-foreground mb-6">
-                  Your comprehensive investment guide has started downloading automatically. We&apos;ve also sent a copy to your inbox.
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Thank you! The 2026 Investment Guide has been sent to your email.
                 </p>
-                <div className="flex flex-wrap gap-3">
-                  <a 
-                    href="/assets/Homes_by_Farouk_Foreign_Investor_Guide.pdf" 
-                    download="Homes_by_Farouk_Foreign_Investor_Guide.pdf"
-                    className="inline-flex items-center gap-2 red-button px-6 py-3 text-[10px] font-bold"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                    Download Directly
-                  </a>
-                  <a 
-                    href="/assets/Homes_by_Farouk_Foreign_Investor_Guide.pdf" 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 border border-primary/40 hover:border-primary text-white text-[10px] font-bold px-5 py-3 transition-colors"
-                  >
-                    <ExternalLink className="w-3.5 h-3.5" />
-                    Open PDF in Browser
-                  </a>
-                </div>
               </div>
             ) : (
               <>
@@ -217,7 +157,7 @@ export function LeadMagnetSplit() {
                     className="w-full red-button py-4 mt-4 text-xs font-bold disabled:opacity-50" 
                     type="submit"
                   >
-                    {loading === 'foreign' ? 'Preparing Your PDF...' : 'Download Guide'}
+                    {loading === 'foreign' ? 'Sending Guide...' : 'Download Guide'}
                   </button>
                 </form>
               </>
