@@ -65,7 +65,7 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
   }
 
   // RealEstateListing JSON-LD Schema mapped directly to database fields
-  const jsonLd = {
+  const schemaData = {
     '@context': 'https://schema.org',
     '@type': 'RealEstateListing',
     name: property.title,
@@ -81,12 +81,13 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
       unitCode: 'MTK',
     },
   };
+  const jsonLd = schemaData;
 
   return (
     <CurrencyProvider>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
       />
       <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
         <Navbar />
