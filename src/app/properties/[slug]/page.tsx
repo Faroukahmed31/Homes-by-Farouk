@@ -64,17 +64,27 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
     notFound();
   }
 
-  // RealEstateListing JSON-LD Schema mapped directly to database fields
+  // Determine primary schema type (Apartment or SingleFamilyResidence for houses/villas)
+  const isHouse = property.propertyType === 'VILLA' || String(property.propertyType).toUpperCase() === 'HOUSE';
+  const primaryType = isHouse ? 'SingleFamilyResidence' : 'Apartment';
+
+  // Format numberOfBedrooms as an integer or QuantitativeValue
+  const isSingleInteger = /^\d+$/.test(property.bedrooms?.trim() || '');
+  const numberOfBedrooms = isSingleInteger
+    ? parseInt(property.bedrooms, 10)
+    : {
+        '@type': 'QuantitativeValue',
+        value: property.bedrooms,
+      };
+
+  // JSON-LD Schema mapped directly to database fields
   const schemaData = {
     '@context': 'https://schema.org',
-    '@type': 'RealEstateListing',
+    '@type': primaryType,
     name: property.title,
     image: property.heroImage,
     description: property.description,
-    numberOfBedrooms: {
-      '@type': 'QuantitativeValue',
-      value: property.bedrooms,
-    },
+    numberOfBedrooms,
     floorSize: {
       '@type': 'QuantitativeValue',
       value: property.squareMeters,

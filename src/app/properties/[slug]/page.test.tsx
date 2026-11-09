@@ -36,6 +36,8 @@ vi.mock('@/lib/properties', () => ({
         ...mockProperty,
         slug: 'short-desc',
         title: 'Short Desc Villa',
+        propertyType: 'VILLA',
+        bedrooms: '4',
         description: 'Short luxury description under 150 chars.',
       };
     }
@@ -105,8 +107,8 @@ describe('Dynamic Property Page - SEO & Metadata', () => {
     });
   });
 
-  describe('PropertyPage JSON-LD RealEstateListing Schema', () => {
-    it('injects <script type="application/ld+json"> containing valid RealEstateListing schema', async () => {
+  describe('PropertyPage JSON-LD Structured Data Schema', () => {
+    it('injects <script type="application/ld+json"> containing valid Apartment schema for apartments', async () => {
       const pageJsx = await PropertyPage({
         params: Promise.resolve({ slug: 'azure-heights' }),
       });
@@ -118,7 +120,7 @@ describe('Dynamic Property Page - SEO & Metadata', () => {
       const schema = JSON.parse(scriptTag!.innerHTML);
 
       expect(schema['@context']).toBe('https://schema.org');
-      expect(schema['@type']).toBe('RealEstateListing');
+      expect(schema['@type']).toBe('Apartment');
       expect(schema.name).toBe(mockProperty.title);
       expect(schema.image).toBe(mockProperty.heroImage);
       expect(schema.description).toBe(mockProperty.description);
@@ -126,6 +128,27 @@ describe('Dynamic Property Page - SEO & Metadata', () => {
         '@type': 'QuantitativeValue',
         value: mockProperty.bedrooms,
       });
+      expect(schema.floorSize).toEqual({
+        '@type': 'QuantitativeValue',
+        value: mockProperty.squareMeters,
+        unitCode: 'MTK',
+      });
+    });
+
+    it('injects SingleFamilyResidence schema with integer numberOfBedrooms for villas/houses', async () => {
+      const pageJsx = await PropertyPage({
+        params: Promise.resolve({ slug: 'short-desc' }),
+      });
+
+      const { container } = render(pageJsx);
+      const scriptTag = container.querySelector('script[type="application/ld+json"]');
+      expect(scriptTag).not.toBeNull();
+
+      const schema = JSON.parse(scriptTag!.innerHTML);
+
+      expect(schema['@context']).toBe('https://schema.org');
+      expect(schema['@type']).toBe('SingleFamilyResidence');
+      expect(schema.numberOfBedrooms).toBe(4);
       expect(schema.floorSize).toEqual({
         '@type': 'QuantitativeValue',
         value: mockProperty.squareMeters,
