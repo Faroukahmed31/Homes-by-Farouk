@@ -84,34 +84,33 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
   const jsonLd = schemaData;
 
   return (
-    <CurrencyProvider>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
-      />
-      <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
-        <Navbar />
-        
-        <main className="pt-24 max-w-[1440px] mx-auto">
-          <PropertyHeroSlideshow property={property} />
-          <PropertyStats property={property} />
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }} />
+      <CurrencyProvider>
+        <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
+          <Navbar />
+          
+          <main className="pt-24 max-w-[1440px] mx-auto">
+            <PropertyHeroSlideshow property={property} />
+            <PropertyStats property={property} />
 
-          <div className="px-6 md:px-20 py-20 flex flex-col lg:flex-row gap-20">
-            {/* Left Column: Details */}
-            <div className="w-full lg:w-[65%]">
-              <PropertyDetails property={property} />
+            <div className="px-6 md:px-20 py-20 flex flex-col lg:flex-row gap-20">
+              {/* Left Column: Details */}
+              <div className="w-full lg:w-[65%]">
+                <PropertyDetails property={property} />
+              </div>
+
+              {/* Right Column: Sticky Form */}
+              <div className="w-full lg:w-[35%]">
+                <InquiryForm property={property} />
+              </div>
             </div>
+          </main>
 
-            {/* Right Column: Sticky Form */}
-            <div className="w-full lg:w-[35%]">
-              <InquiryForm property={property} />
-            </div>
-          </div>
-        </main>
-
-        <Footer />
-      </div>
-    </CurrencyProvider>
+          <Footer />
+        </div>
+      </CurrencyProvider>
+    </>
   );
 }
 
