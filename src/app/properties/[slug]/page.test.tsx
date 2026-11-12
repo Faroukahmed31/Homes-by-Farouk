@@ -156,5 +156,72 @@ describe('Dynamic Property Page - SEO & Metadata', () => {
       });
     });
   });
+
+  describe('PropertyPage GEO Optimizations (AI Summary, FAQ Section, and FAQPage Schema)', () => {
+    it('renders the AI Summary block with exact dynamic sentence', async () => {
+      const pageJsx = await PropertyPage({
+        params: Promise.resolve({ slug: 'azure-heights' }),
+      });
+
+      const { getByText } = render(pageJsx);
+      expect(
+        getByText(
+          `${mockProperty.title} is a premium real estate listing in Nairobi featuring ${mockProperty.bedrooms} bedrooms and ${mockProperty.squareMeters} of living space.`
+        )
+      ).toBeInTheDocument();
+    });
+
+    it('renders the Frequently Asked Questions H2 section with 3 dynamic Q&A blocks', async () => {
+      const pageJsx = await PropertyPage({
+        params: Promise.resolve({ slug: 'azure-heights' }),
+      });
+
+      const { getByRole, getByText } = render(pageJsx);
+      const faqHeading = getByRole('heading', { level: 2, name: 'Frequently Asked Questions' });
+      expect(faqHeading).toBeInTheDocument();
+
+      expect(getByText(`How many bedrooms does ${mockProperty.title} have?`)).toBeInTheDocument();
+      expect(getByText(`It features ${mockProperty.bedrooms} bedrooms.`)).toBeInTheDocument();
+
+      expect(getByText(`What is the size of ${mockProperty.title}?`)).toBeInTheDocument();
+      expect(getByText(`The property offers ${mockProperty.squareMeters} of living space.`)).toBeInTheDocument();
+
+      expect(getByText(`Where is ${mockProperty.title} located?`)).toBeInTheDocument();
+    });
+
+    it('injects a second <script type="application/ld+json"> with FAQPage schema without altering primary schema', async () => {
+      const pageJsx = await PropertyPage({
+        params: Promise.resolve({ slug: 'azure-heights' }),
+      });
+
+      const { container } = render(pageJsx);
+      const scriptTags = container.querySelectorAll('script[type="application/ld+json"]');
+      expect(scriptTags.length).toBe(2);
+
+      const primarySchema = JSON.parse(scriptTags[0].innerHTML);
+      expect(primarySchema['@type']).toBe('Apartment');
+
+      const faqSchema = JSON.parse(scriptTags[1].innerHTML);
+      expect(faqSchema['@context']).toBe('https://schema.org');
+      expect(faqSchema['@type']).toBe('FAQPage');
+      expect(faqSchema.mainEntity).toHaveLength(3);
+      expect(faqSchema.mainEntity[0]).toEqual({
+        '@type': 'Question',
+        name: `How many bedrooms does ${mockProperty.title} have?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `It features ${mockProperty.bedrooms} bedrooms.`,
+        },
+      });
+      expect(faqSchema.mainEntity[1]).toEqual({
+        '@type': 'Question',
+        name: `What is the size of ${mockProperty.title}?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `The property offers ${mockProperty.squareMeters} of living space.`,
+        },
+      });
+    });
+  });
 });
 

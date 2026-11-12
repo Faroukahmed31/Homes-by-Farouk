@@ -93,14 +93,54 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
   };
   const jsonLd = schemaData;
 
+  // Dynamic GEO FAQ items and FAQPage JSON-LD Schema
+  const faqs = [
+    {
+      question: `How many bedrooms does ${property.title} have?`,
+      answer: `It features ${property.bedrooms} bedrooms.`,
+    },
+    {
+      question: `What is the size of ${property.title}?`,
+      answer: `The property offers ${property.squareMeters} of living space.`,
+    },
+    {
+      question: `Where is ${property.title} located?`,
+      answer: `${property.title} is located in ${property.location || 'Nairobi'}.${property.description ? ` ${property.description}` : ''}`,
+    },
+  ];
+
+  const faqSchemaData = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: faq.answer,
+      },
+    })),
+  };
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchemaData) }} />
       <CurrencyProvider>
         <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
           <Navbar />
           
           <main className="pt-24 max-w-[1440px] mx-auto">
+            {/* AI Summary Block */}
+            <section
+              aria-label="Property Overview"
+              className="px-6 md:px-20 py-5 border-b border-primary/15 bg-primary/[0.03]"
+            >
+              <p className="text-sm md:text-base font-sans text-foreground/80 leading-relaxed max-w-4xl">
+                {`${property.title} is a premium real estate listing in Nairobi featuring ${property.bedrooms} bedrooms and ${property.squareMeters} of living space.`}
+              </p>
+            </section>
+
             <PropertyHeroSlideshow property={property} />
             <PropertyStats property={property} />
 
@@ -115,6 +155,28 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
                 <InquiryForm property={property} />
               </div>
             </div>
+
+            {/* Dynamic FAQ Section */}
+            <section className="px-6 md:px-20 pb-20 pt-8 border-t border-primary/15">
+              <h2 className="text-3xl font-heading text-primary mb-10 border-b border-primary/20 pb-4 inline-block">
+                Frequently Asked Questions
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {faqs.map((faq, index) => (
+                  <div
+                    key={index}
+                    className="border border-primary/20 bg-primary/5 p-6 space-y-3"
+                  >
+                    <h3 className="text-lg font-heading text-foreground">
+                      {faq.question}
+                    </h3>
+                    <p className="text-sm font-sans text-foreground/70 leading-relaxed">
+                      {faq.answer}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </section>
           </main>
 
           <Footer />
